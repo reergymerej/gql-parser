@@ -289,28 +289,6 @@ export const isEscapedUnicode = (value: string): boolean => {
   return terminal.test(value)
 }
 
-export const isStringCharacter = (value: string): boolean => {
-  /*
-
-    StringCharacter ::
-      SourceCharacter but not " or | or LineTerminator
-      \u EscapedUnicode
-      \ EscapedCharacter
-
-  */
-
-  const isTerminal2 = (value: string) => {
-    const slashU = '\\u'
-    const startsWithSlashU = value.indexOf(slashU) === 0
-    if (startsWithSlashU) {
-      const rest = value.substr(slashU.length)
-      return isEscapedUnicode(rest)
-    }
-    return false
-  }
-  return isTerminal2(value)
-}
-
 export const isLineTerminator = (value: string): boolean => {
   /*
 
@@ -333,8 +311,54 @@ export const isLineTerminator = (value: string): boolean => {
     value.indexOf(carriageReturn) === 0
     && !isThree(value)
 
-
   return isOne(value)
     || isTwo(value)
     || isThree(value)
+}
+
+const logIf = (message: string, condition: boolean) => {
+  if (condition && false) {
+    console.log(message)
+  }
+}
+
+export const isStringCharacter = (value: string): boolean => {
+  /*
+
+    StringCharacter ::
+      SourceCharacter but not " or \ or LineTerminator
+      \u EscapedUnicode
+      \ EscapedCharacter
+
+  */
+
+  const isThree = (value: string): boolean => {
+    const result = value[0] === '\\'
+    && isEscapedCharacter(value.substring(1))
+    logIf('isThree', result)
+    return result
+  }
+
+  const isTwo = (value: string) => {
+    const slashU = '\\u'
+    const startsWithSlashU = value.indexOf(slashU) === 0
+    let result = false
+    if (startsWithSlashU) {
+      const rest = value.substr(slashU.length)
+      result = isEscapedUnicode(rest)
+    }
+    logIf('isTwo', result)
+    return result
+  }
+
+  const isOne = (value: string): boolean => {
+    const result = isSourceCharacter(value)
+    && !['"', '\\'].includes(value)
+    logIf('isOne', result)
+    return result
+  }
+
+  return isThree(value)
+  || isTwo(value)
+  || isOne(value)
 }

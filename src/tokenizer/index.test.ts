@@ -145,16 +145,6 @@ describe('isEscapedUnicode', () => {
   })
 })
 
-describe('isStringCharacter', () => {
-  it.each([
-    [true, '\\u00Af'],
-    [false, '\\u00A'],
-  ])('should return %s for %s', (expected, value) => {
-    const actual = isStringCharacter(value)
-    expect(actual).toEqual(expected)
-  })
-})
-
 describe('isLineTerminator', () => {
   it.each([
     [true, '\\u000A'],
@@ -162,6 +152,22 @@ describe('isLineTerminator', () => {
     [true, '\\u000Dboop'],
   ])('should return %s for %s', (expected, value) => {
     const actual = isLineTerminator(value)
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('isStringCharacter', () => {
+  it.each([
+    [true, '\\t'],
+    [true, '\\"'],
+    [false, '\\'],
+    [true, '\\u00Af'],
+    [true, '\\u000L'],
+    [true, 'r'],
+    [false, '"'],
+    [true, '\\u000A'],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isStringCharacter(value)
     expect(actual).toEqual(expected)
   })
 })
