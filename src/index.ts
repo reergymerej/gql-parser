@@ -1,13 +1,12 @@
-import tokenizer, {Token} from "./tokenizer"
+import tokenizer, { Token } from "./tokenizer"
 
-type Lexed = any
+type Lexed = any;
 const lexer = (tokens: Token[]): Lexed[] => {
   console.log(tokens)
   return []
 }
 
-
-type AST = any
+type AST = any;
 const parser = (lexed: Lexed[]): AST => {
   console.log(lexed)
   return {}

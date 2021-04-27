@@ -13,5 +13,9 @@ module.exports = {
       'error',
       'never',
     ],
+    'quotes': [
+      'error',
+      'single',
+    ],
   },
 }
