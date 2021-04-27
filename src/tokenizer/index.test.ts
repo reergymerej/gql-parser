@@ -1,181 +1,155 @@
-import {getNextToken, isBlockStringCharacter, isEscapedCharacter, isEscapedUnicode, isSourceCharacter, isStringCharacter} from "."
+import {
+  getNextToken,
+  isBlockStringCharacter,
+  isEscapedCharacter,
+  isEscapedUnicode,
+  isSourceCharacter,
+  isStringCharacter,
+} from ".";
 
-describe('getting tokens', () => {
-  describe('Punctuator', () => {
+describe("getting tokens", () => {
+  describe("Punctuator", () => {
     it.each([
-      '!',
-      '$',
-      '(',
-      ')',
-      '...',
-      ':',
-      '=',
-      '@',
-      '[',
-      ']',
-      '{',
-      '|',
-      '}',
-    ])('should find %s', (punctuator) => {
-      const input = `${punctuator}asdf`
-      const actual = getNextToken(input)
-      expect(actual).toEqual(punctuator)
-    })
-  })
+      "!",
+      "$",
+      "(",
+      ")",
+      "...",
+      ":",
+      "=",
+      "@",
+      "[",
+      "]",
+      "{",
+      "|",
+      "}",
+    ])("should find %s", (punctuator) => {
+      const input = `${punctuator}asdf`;
+      const actual = getNextToken(input);
+      expect(actual).toEqual(punctuator);
+    });
+  });
 
-  describe('UnicodeBOM', () => {
+  describe("UnicodeBOM", () => {
+    it.each(["\uFEFF"])("should find %s", (token) => {
+      const input = `${token}asdf`;
+      const actual = getNextToken(input);
+      expect(actual).toEqual(token);
+    });
+  });
+
+  describe("WhiteSpace", () => {
     it.each([
-      '\uFEFF',
-    ])('should find %s', (token) => {
-      const input = `${token}asdf`
-      const actual = getNextToken(input)
-      expect(actual).toEqual(token)
-    })
-  })
+      "\u0009", // \t
+      "\u0020", // space
+    ])("should find %s", (token) => {
+      const input = `${token}asdf`;
+      const actual = getNextToken(input);
+      expect(actual).toEqual(token);
+    });
+  });
 
-  describe('WhiteSpace', () => {
+  describe("LineTerminator", () => {
     it.each([
-      '\u0009', // \t
-      '\u0020', // space
-    ])('should find %s', (token) => {
-      const input = `${token}asdf`
-      const actual = getNextToken(input)
-      expect(actual).toEqual(token)
-    })
-  })
+      "\u000A", // \n
+      "\u000D", // \r
+      "\u000D\u000A", // \r\n
+    ])("should find %s", (token) => {
+      const input = `${token}asdf`;
+      const actual = getNextToken(input);
+      expect(actual).toEqual(token);
+    });
+  });
 
-  describe('LineTerminator', () => {
-    it.each([
-      '\u000A',  // \n
-      '\u000D',  // \r
-      '\u000D\u000A',  // \r\n
-    ])('should find %s', (token) => {
-      const input = `${token}asdf`
-      const actual = getNextToken(input)
-      expect(actual).toEqual(token)
-    })
-  })
-
-  describe('Comment', () => {
+  describe("Comment", () => {
     it.each([
       [
-        '# This is a supersweet comment with no newline!',
-        '# This is a supersweet comment with no newline!',
+        "# This is a supersweet comment with no newline!",
+        "# This is a supersweet comment with no newline!",
       ],
       [
-        '# This is a supersweet comment with a newline!',
-        '# This is a supersweet comment with a newline!\nthis is something else',
-      ]
-    ])('should find %s', (expected, input) => {
-      const actual = getNextToken(input)
-      expect(actual).toEqual(expected)
-    })
-  })
+        "# This is a supersweet comment with a newline!",
+        "# This is a supersweet comment with a newline!\nthis is something else",
+      ],
+    ])("should find %s", (expected, input) => {
+      const actual = getNextToken(input);
+      expect(actual).toEqual(expected);
+    });
+  });
 
-  describe('StringValue', () => {
+  describe("StringValue", () => {
     it.each([
-      [
-        `"This is a string"`,
-        `"This is a string"blah blah blah`,
-      ],
-      [
-        null,
-        `"This is unterminated`,
-      ],
-    ])('should find %s', (expected, input) => {
-      const actual = getNextToken(input)
-      expect(actual).toEqual(expected)
-    })
+      [`"This is a string"`, `"This is a string"blah blah blah`],
+      [null, `"This is unterminated`],
+    ])("should find %s", (expected, input) => {
+      const actual = getNextToken(input);
+      expect(actual).toEqual(expected);
+    });
 
-    it.each([
-      [
-        `"This has an invalid escape \\"`,
-      ],
-    ])('should throw', (input) => {
+    it.each([[`"This has an invalid escape \\"`]])("should throw", (input) => {
       expect(() => {
-        getNextToken(input)
-      }).toThrow()
-    })
-  })
-})
+        getNextToken(input);
+      }).toThrow();
+    });
+  });
+});
 
-describe('SourceCharacter', () => {
+describe("SourceCharacter", () => {
   it.each([
-    [
-      true,
-      'a',
-    ],
-    [
-      true,
-      '\u0009',
-    ],
-    [
-      false,
-      '\u0008',
-    ],
-    [
-      false,
-      '\x00',
-    ],
-  ])('should return %s', (expected, char) => {
-    const actual = isSourceCharacter(char)
-    expect(actual).toEqual(expected)
-  })
-})
+    [true, "a"],
+    [true, "\u0009"],
+    [false, "\u0008"],
+    [false, "\x00"],
+  ])("should return %s", (expected, char) => {
+    const actual = isSourceCharacter(char);
+    expect(actual).toEqual(expected);
+  });
+});
 
-describe('BlockStringCharacter', () => {
+describe("BlockStringCharacter", () => {
   it.each([
-    [
-      false,
-      '"""',
-    ],
-    [
-      true,
-      '\\"""',
-    ],
-    [
-      true,
-      'h',
-    ],
-  ])('should return %s for %s', (expected, value) => {
-    const actual = isBlockStringCharacter(value)
-    expect(actual).toEqual(expected)
-  })
-})
+    [false, '"""'],
+    [true, '\\"""'],
+    [true, "h"],
+  ])("should return %s for %s", (expected, value) => {
+    const actual = isBlockStringCharacter(value);
+    expect(actual).toEqual(expected);
+  });
+});
 
-describe('EscapedCharacter', () => {
+describe("EscapedCharacter", () => {
   it.each([
-    [ false, 'k'],
-    [ true, '"'],
-    [ true, '\\'],
-    [ true, '/'],
-    [ true, 'b'],
-    [ true, 'f'],
-    [ true, 'n'],
-    [ true, 'r'],
-    [ true, 't'],
-  ])('should return %s for %s', (expected, value) => {
-    const actual = isEscapedCharacter(value)
-    expect(actual).toEqual(expected)
-  })
-})
+    [false, "k"],
+    [true, '"'],
+    [true, "\\"],
+    [true, "/"],
+    [true, "b"],
+    [true, "f"],
+    [true, "n"],
+    [true, "r"],
+    [true, "t"],
+  ])("should return %s for %s", (expected, value) => {
+    const actual = isEscapedCharacter(value);
+    expect(actual).toEqual(expected);
+  });
+});
 
-describe('isEscapedUnicode', () => {
+describe("isEscapedUnicode", () => {
   it.each([
-    [ false, 'k'],
-    [ true, '00Af'],
-  ])('should return %s for %s', (expected, value) => {
-    const actual = isEscapedUnicode(value)
-    expect(actual).toEqual(expected)
-  })
-})
+    [false, "k"],
+    [true, "00Af"],
+  ])("should return %s for %s", (expected, value) => {
+    const actual = isEscapedUnicode(value);
+    expect(actual).toEqual(expected);
+  });
+});
 
-fdescribe('isStringCharacter', () => {
+fdescribe("isStringCharacter", () => {
   it.each([
-    [ true, '\\u00Af'],
-    [ false, '\\u00A'],
-  ])('should return %s for %s', (expected, value) => {
-    const actual = isStringCharacter(value)
-    expect(actual).toEqual(expected)
-  })
-})
+    [true, "\\u00Af"],
+    [false, "\\u00A"],
+  ])("should return %s for %s", (expected, value) => {
+    const actual = isStringCharacter(value);
+    expect(actual).toEqual(expected);
+  });
+});
