@@ -49,3 +49,25 @@ Documents may have:
 If a Document contains only one operation, that operation may be unnamed or
 represented in the shorthand form, which omits both the query keyword and
 operation name.
+
+--------------------------------------------------------------------------------
+
+## Tokens
+
+May be multiple characters
+May be ignored
+May be lexical
+
+Punctuator
+Name
+IntValue
+FloatValue
+StringValue
+UnicodeBOM
+WhiteSpace
+LineTerminator
+Comment
+Comma
+
+For each type, start, add while still in pattern, end.
+

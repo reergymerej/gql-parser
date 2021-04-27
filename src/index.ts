@@ -19,6 +19,8 @@ schema {
   mutation: MyMutationRootType
 }
 
+# Super sweet comment
+
 type MyQueryRootType {
   someField: String
 }

@@ -91,6 +91,10 @@ const ignoredJoined = ignored.join('|')
 const ignoredRegex = new RegExp(`[${ignoredJoined}]+`)
 // console.log({ignoredRegex})
 
+const isAnyToken = (char: string): boolean => {
+  return true
+}
+
 const getNextTokenStart = (i: number, source: string): number | null => {
   const max = source.length
   while (i < max) {
@@ -113,12 +117,17 @@ const isAfterEndOfToken = (token: string, char: string): boolean => {
   if (tokenIsPunctuator) {
     return true
   }
+  const nextIsPunctuator = isPunctuator(char)
+  if (nextIsPunctuator) {
+    return true
+  }
   const nextIsIgnored = ignored.includes(char)
   if (nextIsIgnored) {
     return true
   }
-  const nextIsPunctuator = isPunctuator(char)
-  if (nextIsPunctuator) {
+  // This is ignored, but next isn't.
+  const tokenIsIgnored = ignored.includes(token)
+  if (tokenIsIgnored) {
     return true
   }
 
@@ -126,37 +135,35 @@ const isAfterEndOfToken = (token: string, char: string): boolean => {
 }
 
 
-// Step 1 - Find Lexical Tokens by splitting on Ignored Tokens.
-const findLexicalTokens = (gql: string): string[] => {
-
-
-  let i = 0
+const getEndOfToken = (currentToken: string, i: number, gql: string): number => {
   const max = gql.length
-  const tokens: string[] = []
-  let currentToken = undefined
-
   while (i < max) {
-    if (currentToken === undefined) {
-      const nextTokenIndex = getNextTokenStart(i, gql)
-      if (nextTokenIndex === null) {
-        break
-      }
-      currentToken = gql[nextTokenIndex]
-      i = nextTokenIndex + 1
-      continue
-    }
-
     const char = gql[i]
     const afterEnd = isAfterEndOfToken(currentToken, char)
-    if (!afterEnd) {
-      currentToken += char
-    } else {
-      tokens.push(currentToken)
-      console.log({ currentToken })
-      currentToken = undefined
-      continue
+    if (afterEnd) {
+      break
     }
     i++
+  }
+  return i - 1
+}
+
+const findLexicalTokens = (gql: string): string[] => {
+
+  const end = gql.length
+  const tokens: string[] = []
+  let tokenStart = getNextTokenStart(0, gql)
+  if (tokenStart === null) {
+    return []
+  }
+  let tokenEnd
+
+  while (tokenStart < end) {
+    tokenEnd = getEndOfToken(gql[tokenStart], tokenStart + 1, gql)
+    const token = gql.substring(tokenStart, tokenEnd + 1)
+    tokens.push(token)
+    tokenStart = tokenEnd + 1
+    tokenEnd = undefined
   }
 
   return tokens
