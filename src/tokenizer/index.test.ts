@@ -3,6 +3,7 @@ import {
   isBlockStringCharacter,
   isEscapedCharacter,
   isEscapedUnicode,
+  isLineTerminator,
   isSourceCharacter,
   isStringCharacter,
 } from '.'
@@ -144,12 +145,23 @@ describe('isEscapedUnicode', () => {
   })
 })
 
-fdescribe('isStringCharacter', () => {
+describe('isStringCharacter', () => {
   it.each([
     [true, '\\u00Af'],
     [false, '\\u00A'],
   ])('should return %s for %s', (expected, value) => {
     const actual = isStringCharacter(value)
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('isLineTerminator', () => {
+  it.each([
+    [true, '\\u000A'],
+    [true, '\\u000D\\u000A'],
+    [true, '\\u000Dboop'],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isLineTerminator(value)
     expect(actual).toEqual(expected)
   })
 })

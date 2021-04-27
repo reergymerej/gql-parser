@@ -1,19 +1,19 @@
 /* eslint-disable no-control-regex */
 
 type Punctuator =
-  | "!"
-  | "$"
-  | "("
-  | ")"
-  | "..."
-  | ":"
-  | "="
-  | "@"
-  | "["
-  | "]"
-  | "{"
-  | "|"
-  | "}";
+  | '!'
+  | '$'
+  | '('
+  | ')'
+  | '...'
+  | ':'
+  | '='
+  | '@'
+  | '['
+  | ']'
+  | '{'
+  | '|'
+  | '}';
 
 type Name = string;
 type IntValue = any;
@@ -33,40 +33,40 @@ type Comma = any;
 type Ignored = UnicodeBOM | WhiteSpace | LineTerminator | Comment | Comma;
 
 const punctuators = [
-  "!",
-  "$",
-  "(",
-  ")",
-  "...",
-  ":",
-  "=",
-  "@",
-  "[",
-  "]",
-  "{",
-  "|",
-  "}",
+  '!',
+  '$',
+  '(',
+  ')',
+  '...',
+  ':',
+  '=',
+  '@',
+  '[',
+  ']',
+  '{',
+  '|',
+  '}',
 ]
 
 const nameRegex = /[_A-Za-z][_0-9A-Za-z]*/
 
-const BOM = "\uFEFF"
+const BOM = '\uFEFF'
 const unicodeBOM = BOM
 
 const whitespace = [
-  "\u0009", // \t
-  "\u0020", // space
+  '\u0009', // \t
+  '\u0020', // space
 ]
 
 const lineTerminators = [
-  "\u000D\u000A", // \r\n  Keep this first so \r doesn't prematurely match.
-  "\u000A", // \n
-  "\u000D", // \r
+  '\u000D\u000A', // \r\n  Keep this first so \r doesn't prematurely match.
+  '\u000A', // \n
+  '\u000D', // \r
 ]
 
-const lineTerminatorJoined = lineTerminators.join("|")
+const lineTerminatorJoined = lineTerminators.join('|')
 
-const insignificantComma = ","
+const insignificantComma = ','
 
 // all code points starting with the # character up to but not including the
 // line terminator.
@@ -77,7 +77,7 @@ const ignored = [
   ...lineTerminators,
   // insignificantComma,  // TODO: handle insignificantComma
 ]
-const ignoredJoined = ignored.join("|")
+const ignoredJoined = ignored.join('|')
 
 const ignoredRegex = new RegExp(`[${ignoredJoined}]+`)
 // console.log({ignoredRegex})
@@ -179,8 +179,8 @@ const getPunctuator: GetToken = (input) => {
   if (punctuators.includes(char)) {
     return char
   }
-  if (input.indexOf("...") === 0) {
-    return "..."
+  if (input.indexOf('...') === 0) {
+    return '...'
   }
   return null
 }
@@ -206,7 +206,7 @@ const getComment: GetToken = (input) => {
 
 const getBlockString: GetToken = (input) => {
   // """ BlockStringCharacter """
-  return ""
+  return ''
 }
 
 const getString: GetToken = (input) => {
@@ -217,7 +217,7 @@ const getString: GetToken = (input) => {
     const invalid = /^"[^"]*\\[^"]*"/
     const isInvald = invalid.test(input)
     if (isInvald) {
-      throw new Error("This is an invalid string.")
+      throw new Error('This is an invalid string.')
     }
 
     const pattern = new RegExp(`^"[^"\\${lineTerminatorJoined}]*"`)
@@ -275,7 +275,7 @@ export const isEscapedCharacter = (value: string): boolean => {
       " \ / b f n r t
 
   */
-  return ['"', "\\", "/", "b", "f", "n", "r", "t"].includes(value)
+  return ['"', '\\', '/', 'b', 'f', 'n', 'r', 't'].includes(value)
 }
 
 export const isEscapedUnicode = (value: string): boolean => {
@@ -299,10 +299,8 @@ export const isStringCharacter = (value: string): boolean => {
 
   */
 
-  console.log({ value })
-
   const isTerminal2 = (value: string) => {
-    const slashU = "\\u"
+    const slashU = '\\u'
     const startsWithSlashU = value.indexOf(slashU) === 0
     if (startsWithSlashU) {
       const rest = value.substr(slashU.length)
@@ -310,9 +308,33 @@ export const isStringCharacter = (value: string): boolean => {
     }
     return false
   }
-
   return isTerminal2(value)
+}
 
-  return value[0] === "\\u" && isEscapedUnicode(value.substr(1))
-  return false
+export const isLineTerminator = (value: string): boolean => {
+  /*
+
+    LineTerminator ::
+      \u000A
+      \u000D [lookahead!=\u000A]
+      \u000D \u000A
+
+  */
+
+  const newLine = '\\u000A'
+  const carriageReturn = '\\u000D'
+
+  const isOne = (value: string): boolean => value === newLine
+
+  const isThree = (value: string): boolean =>
+    value.indexOf(`${carriageReturn}${newLine}`) === 0
+
+  const isTwo = (value: string): boolean =>
+    value.indexOf(carriageReturn) === 0
+    && !isThree(value)
+
+
+  return isOne(value)
+    || isTwo(value)
+    || isThree(value)
 }
