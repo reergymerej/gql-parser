@@ -61,6 +61,7 @@ const nameRegex = /[_A-Za-z][_0-9A-Za-z]*/
 
 
 const BOM = '\uFEFF'
+const unicodeBOM = BOM
 
 const whitespace = [
   '\u0009', // \t
@@ -68,9 +69,9 @@ const whitespace = [
 ]
 
 const lineTerminators = [
+  '\u000D\u000A',  // \r\n  Keep this first so \r doesn't prematurely match.
   '\u000A',  // \n
   '\u000D',  // \r
-  '\u000D\u000A',  // \r\n
 ]
 
 const lineTerminatorJoined = lineTerminators.join('|')
@@ -178,3 +179,52 @@ const tokenizer = (gql: string): Token[] => {
 }
 
 export default tokenizer
+
+
+
+
+type GetToken = (input: string) => string | null
+
+const getPunctuator: GetToken = input => {
+  const char = input[0]
+  if (punctuators.includes(char)) {
+    return char
+  }
+  if (input.indexOf('...') === 0) {
+    return '...'
+  }
+  return null
+}
+
+const getUnicodeBOM: GetToken = input => {
+  const char = input[0]
+  return char === unicodeBOM
+  ? unicodeBOM
+  : null
+}
+
+const getWhiteSpace: GetToken = input => {
+  const char = input[0]
+  return whitespace.includes(char)
+    ? char
+    : null
+}
+
+const getLineTerminator: GetToken = input => {
+  return lineTerminators.find(x => input.indexOf(x) === 0)
+    || null
+}
+
+const getComment: GetToken = input => {
+  const matches = input.match(commentRegex)
+  return matches && matches[0]
+}
+
+
+export const getNextToken = (input: string): Token => {
+  return getPunctuator(input)
+    || getUnicodeBOM(input)
+    || getWhiteSpace(input)
+    || getLineTerminator(input)
+    || getComment(input)
+}
