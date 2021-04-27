@@ -58,15 +58,18 @@ May be multiple characters
 May be ignored
 May be lexical
 
-Punctuator
+
+Find StringValue, then Comment.  The rest should be simple.
+
+  Punctuator
 Name
 IntValue
 FloatValue
 StringValue
-UnicodeBOM
-WhiteSpace
-LineTerminator
-Comment
+  UnicodeBOM
+  WhiteSpace
+  LineTerminator
+  Comment
 Comma
 
 For each type, start, add while still in pattern, end.

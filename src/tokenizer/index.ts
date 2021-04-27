@@ -220,11 +220,28 @@ const getComment: GetToken = input => {
   return matches && matches[0]
 }
 
+const getStringValue: GetToken = input => {
+  const char = input[0]
+  if (char === '"') {
+    const invalid = /^"[^"]*\\[^"]*"/
+    const isInvald = invalid.test(input)
+    if (isInvald) {
+      throw new Error('This is an invalid string.')
+    }
 
+    const pattern = new RegExp(`^"[^"\\${lineTerminatorJoined}]*"`)
+    const matches = input.match(pattern)
+    return matches && matches[0]
+  }
+  return null
+}
+
+// This pulls the next token, assuming it starts at index[0].
 export const getNextToken = (input: string): Token => {
-  return getPunctuator(input)
+  return getStringValue(input)
+    || getComment(input)
+    || getPunctuator(input)
     || getUnicodeBOM(input)
     || getWhiteSpace(input)
     || getLineTerminator(input)
-    || getComment(input)
 }

@@ -71,4 +71,30 @@ describe('getting tokens', () => {
       expect(actual).toEqual(expected)
     })
   })
+
+  describe('StringValue', () => {
+    it.each([
+      [
+        `"This is a string"`,
+        `"This is a string"blah blah blah`,
+      ],
+      [
+        null,
+        `"This is unterminated`,
+      ],
+    ])('should find %s', (expected, input) => {
+      const actual = getNextToken(input)
+      expect(actual).toEqual(expected)
+    })
+
+    it.each([
+      [
+        `"This has an invalid escape \\"`,
+      ],
+    ])('should throw', (input) => {
+      expect(() => {
+        getNextToken(input)
+      }).toThrow()
+    })
+  })
 })
