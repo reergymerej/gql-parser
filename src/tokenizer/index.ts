@@ -220,9 +220,16 @@ const getComment: GetToken = input => {
   return matches && matches[0]
 }
 
-const getStringValue: GetToken = input => {
+const getBlockString: GetToken = input => {
+  // """ BlockStringCharacter """
+  return ''
+}
+
+const getString: GetToken = input => {
+  // " StringCharacter "
   const char = input[0]
   if (char === '"') {
+    // SourceCharacter but not " or \ or LineTerminator
     const invalid = /^"[^"]*\\[^"]*"/
     const isInvald = invalid.test(input)
     if (isInvald) {
@@ -236,6 +243,12 @@ const getStringValue: GetToken = input => {
   return null
 }
 
+const getStringValue: GetToken = input => {
+  return (input.indexOf('"""') === 0)
+    ? getBlockString(input)
+    : getString(input)
+}
+
 // This pulls the next token, assuming it starts at index[0].
 export const getNextToken = (input: string): Token => {
   return getStringValue(input)
@@ -244,4 +257,88 @@ export const getNextToken = (input: string): Token => {
     || getUnicodeBOM(input)
     || getWhiteSpace(input)
     || getLineTerminator(input)
+}
+
+const matchesPattern = (pattern: RegExp) =>
+(string: string): boolean => pattern.test(string)
+
+export const isSourceCharacter = matchesPattern(/[\u0009\u000A\u000D\u0020-\uFFFF]/)
+
+export const isBlockStringCharacter = (value: string): boolean => {
+  /*
+
+    BlockStringCharacter ::
+      SourceCharacter but not """ or \"""
+      \"""
+
+  */
+  const tripleTerminal = '"""'
+  const escapedTripleTerminal = '\\"""'
+  return value === escapedTripleTerminal
+    || (
+      isSourceCharacter(value)
+        && (
+          value !== tripleTerminal
+          && value !== escapedTripleTerminal
+        )
+    )
+}
+
+export const isEscapedCharacter = (value: string): boolean => {
+  /*
+
+    EscapedCharacter :: one of
+      " \ / b f n r t
+
+  */
+ return [
+   '"',
+   '\\',
+   '/',
+   'b',
+   'f',
+   'n',
+   'r',
+   't',
+ ].includes(value)
+}
+
+export const isEscapedUnicode = (value: string): boolean => {
+  /*
+
+    EscapedUnicode ::
+      /[0-9A-Fa-f]{4}/
+
+  */
+ const terminal = /[0-9A-Fa-f]{4}/
+ return terminal.test(value)
+}
+
+export const isStringCharacter = (value: string): boolean => {
+  /*
+
+    StringCharacter ::
+      SourceCharacter but not " or | or LineTerminator
+      \u EscapedUnicode
+      \ EscapedCharacter
+
+  */
+
+ console.log({value})
+
+ const isTerminal2 = (value: string) => {
+   const slashU = '\\u'
+   const startsWithSlashU = value.indexOf(slashU) === 0
+   if (startsWithSlashU) {
+     const rest = value.substr(slashU.length)
+     return isEscapedUnicode(rest)
+   }
+   return false
+ }
+
+ return isTerminal2(value)
+
+
+  return value[0] === '\\u' && isEscapedUnicode(value.substr(1))
+  return false
 }

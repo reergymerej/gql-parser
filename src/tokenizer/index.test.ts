@@ -1,4 +1,4 @@
-import {getNextToken} from "."
+import {getNextToken, isBlockStringCharacter, isEscapedCharacter, isEscapedUnicode, isSourceCharacter, isStringCharacter} from "."
 
 describe('getting tokens', () => {
   describe('Punctuator', () => {
@@ -96,5 +96,86 @@ describe('getting tokens', () => {
         getNextToken(input)
       }).toThrow()
     })
+  })
+})
+
+describe('SourceCharacter', () => {
+  it.each([
+    [
+      true,
+      'a',
+    ],
+    [
+      true,
+      '\u0009',
+    ],
+    [
+      false,
+      '\u0008',
+    ],
+    [
+      false,
+      '\x00',
+    ],
+  ])('should return %s', (expected, char) => {
+    const actual = isSourceCharacter(char)
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('BlockStringCharacter', () => {
+  it.each([
+    [
+      false,
+      '"""',
+    ],
+    [
+      true,
+      '\\"""',
+    ],
+    [
+      true,
+      'h',
+    ],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isBlockStringCharacter(value)
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('EscapedCharacter', () => {
+  it.each([
+    [ false, 'k'],
+    [ true, '"'],
+    [ true, '\\'],
+    [ true, '/'],
+    [ true, 'b'],
+    [ true, 'f'],
+    [ true, 'n'],
+    [ true, 'r'],
+    [ true, 't'],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isEscapedCharacter(value)
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('isEscapedUnicode', () => {
+  it.each([
+    [ false, 'k'],
+    [ true, '00Af'],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isEscapedUnicode(value)
+    expect(actual).toEqual(expected)
+  })
+})
+
+fdescribe('isStringCharacter', () => {
+  it.each([
+    [ true, '\\u00Af'],
+    [ false, '\\u00A'],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isStringCharacter(value)
+    expect(actual).toEqual(expected)
   })
 })
