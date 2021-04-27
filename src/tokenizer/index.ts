@@ -91,28 +91,75 @@ const ignoredJoined = ignored.join('|')
 const ignoredRegex = new RegExp(`[${ignoredJoined}]+`)
 // console.log({ignoredRegex})
 
+const getNextTokenStart = (i: number, source: string): number | null => {
+  const max = source.length
+  while (i < max) {
+    const char = source[i]
+    const nextIsIgnored = ignored.includes(char)
+    if (!nextIsIgnored) {
+      return i
+    }
+    i++
+  }
+  return null
+}
+
+const isPunctuator = (char: string): boolean => {
+  return punctuators.includes(char)
+}
+
+const isAfterEndOfToken = (token: string, char: string): boolean => {
+  const tokenIsPunctuator = isPunctuator(token)
+  if (tokenIsPunctuator) {
+    return true
+  }
+  const nextIsIgnored = ignored.includes(char)
+  if (nextIsIgnored) {
+    return true
+  }
+  const nextIsPunctuator = isPunctuator(char)
+  if (nextIsPunctuator) {
+    return true
+  }
+
+  return false
+}
+
 
 // Step 1 - Find Lexical Tokens by splitting on Ignored Tokens.
-const findLexicalTokens = (gql: string): [] => {
-  // Before and after every lexical token may be any amount of ignored tokens
-  // including WhiteSpace and Comment.
-  // split on comments
-  const withoutComments: string[] = gql.split(commentRegex)
-  // console.log({ withoutComments })
+const findLexicalTokens = (gql: string): string[] => {
 
-  // Once comments are removed, we can split the remaining blocks by ignored
-  // tokens.
-  const withoutIgnored = withoutComments.reduce((acc, block) => {
-    const blockWithoutIgnored = block.split(ignoredRegex)
-      .filter(x => x)
-    return [
-      ...acc,
-      ...blockWithoutIgnored,
-    ]
-  }, [] as string[])
-  console.log({ withoutIgnored })
 
-  return []
+  let i = 0
+  const max = gql.length
+  const tokens: string[] = []
+  let currentToken = undefined
+
+  while (i < max) {
+    if (currentToken === undefined) {
+      const nextTokenIndex = getNextTokenStart(i, gql)
+      if (nextTokenIndex === null) {
+        break
+      }
+      currentToken = gql[nextTokenIndex]
+      i = nextTokenIndex + 1
+      continue
+    }
+
+    const char = gql[i]
+    const afterEnd = isAfterEndOfToken(currentToken, char)
+    if (!afterEnd) {
+      currentToken += char
+    } else {
+      tokens.push(currentToken)
+      console.log({ currentToken })
+      currentToken = undefined
+      continue
+    }
+    i++
+  }
+
+  return tokens
 }
 
 const tokenizer = (gql: string): Token[] => {
