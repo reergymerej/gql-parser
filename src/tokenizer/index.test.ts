@@ -6,6 +6,7 @@ import {
   isLineTerminator,
   isSourceCharacter,
   isStringCharacter,
+  isStringValue,
 } from '.'
 
 describe('getting tokens', () => {
@@ -107,17 +108,6 @@ describe('SourceCharacter', () => {
   })
 })
 
-describe('BlockStringCharacter', () => {
-  it.each([
-    [false, '"""'],
-    [true, '\\"""'],
-    [true, 'h'],
-  ])('should return %s for %s', (expected, value) => {
-    const actual = isBlockStringCharacter(value)
-    expect(actual).toEqual(expected)
-  })
-})
-
 describe('EscapedCharacter', () => {
   it.each([
     [false, 'k'],
@@ -171,3 +161,36 @@ describe('isStringCharacter', () => {
     expect(actual).toEqual(expected)
   })
 })
+
+describe('isBlockStringCharacter', () => {
+  it.each([
+    [false, '"""'],
+    [true, '\\"""'],
+    [true, 'h'],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isBlockStringCharacter(value)
+    expect(actual).toEqual(expected)
+  })
+})
+
+fdescribe('isStringValue', () => {
+  it.each([
+    [true, '""""""'],
+    [true, '"""""""'],
+    [true, '"""   """'],
+    [true, '"""\nhello"""'],
+    [true, '"""\\""""""'],
+    [false, '"""""'],
+
+    // RESUME - implement
+    // " StringCharacter[list, opt] "
+    //
+    //
+    //
+    //
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isStringValue(value)
+    expect(actual).toEqual(expected)
+  })
+})
+

@@ -362,3 +362,45 @@ export const isStringCharacter = (value: string): boolean => {
   || isTwo(value)
   || isOne(value)
 }
+
+export const isStringValue = (value: string): boolean => {
+  /*
+
+    StringValue ::
+      " StringCharacter[list, opt] "
+      """ BlockStringCharacter[list, opt] """
+
+  */
+
+  const isTwo = (value: string) => {
+    let result = false
+    const triple = '"""'
+    const startTerminal = value.indexOf(triple)
+    const endTerminal = value.lastIndexOf(triple)
+    if (startTerminal === 0
+        && endTerminal === value.length - triple.length
+        && endTerminal > startTerminal + triple.length - 1
+       ) {
+      const rest = value.substring(startTerminal + triple.length, endTerminal)
+      if (!rest) {
+        result = true
+      } else {
+        result = isBlockStringCharacter(rest)
+      }
+    }
+
+    logIf('isTwo', result)
+    return result
+  }
+
+  const isOne = (value: string): boolean => {
+    return false
+    const result = isSourceCharacter(value)
+    && !['"', '\\'].includes(value)
+    logIf('isOne', result)
+    return result
+  }
+
+  return isTwo(value)
+    || isOne(value)
+}
