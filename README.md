@@ -74,3 +74,13 @@ Comma
 
 For each type, start, add while still in pattern, end.
 
+--------------------------------------------------------------------------------
+
+scanner - reads input
+lexer - converts input to tokens (atomic elements of language)
+parser - converts tokens to AST
+
+What are the atomic elements (tokens) in GQL?
+https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Lexical-Tokens
+
+
