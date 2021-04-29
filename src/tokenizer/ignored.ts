@@ -22,14 +22,16 @@ const unicodeBOM: {
 } = {
   getToken: (input) => {
     const BOM = '\uFEFF'
-    if (input === BOM) {
+    const char = input[0]
+    if (char === BOM) {
+      const remainingInput = input.substring(1)
       return {
         token: {
           ignored: true,
           type: 'UnicodeBOM',
-          value: input,
+          value: char,
         },
-        remainingInput: '',
+        remainingInput,
       }
     }
     return {
@@ -43,22 +45,26 @@ const whiteSpace: {
   getToken: GetToken,
 } = {
   getToken: (input) => {
-    return [
+    const char = input[0]
+    const isMatch = [
       '\u0009',
       '\u0020',
-    ].includes(input)
-      ? {
+    ].includes(char)
+    if (isMatch) {
+      const remainingInput = input.substring(1)
+      return {
         token: {
           ignored: true,
           type: 'WhiteSpace',
-          value: input,
+          value: char,
         },
-        remainingInput: '',
+        remainingInput,
       }
-        : {
-          token: null,
-          remainingInput: input,
-        }
+    }
+    return {
+      token: null,
+      remainingInput: input,
+    }
   },
 }
 

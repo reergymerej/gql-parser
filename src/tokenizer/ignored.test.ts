@@ -3,44 +3,47 @@ import * as ignored from './ignored'
 
 describe('ignored', () => {
   it('should return the UnicodeBOM', () => {
-    const input = '\uFEFF'
+    const remainingInput = 'This stuff is not whiteSpace!'
+    const input = `\uFEFF${remainingInput}`
     const actual = ignored.getToken(input)
     const expected: GetTokenResult = {
       token: {
         ignored: true,
         type: 'UnicodeBOM',
-        value: input,
+        value: '\uFEFF',
       },
-      remainingInput: ''
+      remainingInput,
     }
     expect(actual).toEqual(expected)
   })
 
   describe('WhiteSpace', () => {
     it('should return the WhiteSpace', () => {
-      const input = '\u0009'
+      const remainingInput = 'This stuff is not whiteSpace!'
+      const input = `\u0009${remainingInput}`
       const actual = ignored.getToken(input)
       const expected: GetTokenResult = {
         token: {
           ignored: true,
           type: 'WhiteSpace',
-          value: input,
+          value: '\u0009',
         },
-        remainingInput: '',
+        remainingInput,
       }
       expect(actual).toEqual(expected)
     })
 
     it('should return the WhiteSpace', () => {
-      const input = '\u0020'
+      const remainingInput = 'This stuff is not whiteSpace!'
+      const input = `\u0020${remainingInput}`
       const actual = ignored.getToken(input)
       const expected: GetTokenResult = {
         token: {
           ignored: true,
           type: 'WhiteSpace',
-          value: input,
+          value: '\u0020',
         },
-        remainingInput: '',
+        remainingInput,
       }
       expect(actual).toEqual(expected)
     })
