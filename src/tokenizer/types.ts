@@ -21,4 +21,8 @@ export type Ignored =
   | Comment
   | Comma
 
-export type GetToken = (input: string) => Token | null
+export type GetTokenResult = {
+  token: Token | null,
+  remainingInput: string,
+}
+export type GetToken = (input: string) => GetTokenResult

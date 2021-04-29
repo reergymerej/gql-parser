@@ -1,53 +1,67 @@
 import {getToken} from './token'
-import {Token} from './types'
+import {GetTokenResult} from './types'
 import * as punctuator from './punctuator'
 import * as ignored from './ignored'
 
+const input = 'THIS IS SOME SILLY ASS INPUT'
+const nope: GetTokenResult = {
+  token: null,
+  remainingInput: input,
+}
+
 describe('getToken', () => {
   beforeEach(() => {
-    jest.spyOn(punctuator, 'getToken').mockReturnValue(null)
-    jest.spyOn(ignored, 'getToken').mockReturnValue(null)
+    jest.spyOn(punctuator, 'getToken').mockReturnValue(nope)
+    jest.spyOn(ignored, 'getToken').mockReturnValue(nope)
   })
 
-  describe('when the input is valid', () => {
-    const input = 'THIS IS SOME SILLY ASS INPUT'
-
-    describe('when it is Ignored', () => {
-      beforeEach(() => {
-        jest.spyOn(ignored, 'getToken').mockReturnValue({
+  describe('when it is Ignored', () => {
+    beforeEach(() => {
+      jest.spyOn(ignored, 'getToken').mockReturnValue({
+        token: {
           ignored: true,
           type: 'Ignored',
           value: input,
-        })
-      })
-
-      it('should return the Ignored', () => {
-        const actual = getToken(input)
-        const expected: Token = {
-          ignored: true,
-          type: 'Ignored',
-          value: input,
-        }
-        expect(actual).toEqual(expected)
+        },
+        remainingInput: input,
       })
     })
 
-    describe('when it is Punctuator', () => {
-      beforeEach(() => {
-        jest.spyOn(punctuator, 'getToken').mockReturnValue({
-          type: 'Punctuator',
+    it('should return the Ignored', () => {
+      const actual = getToken(input)
+      const expected: GetTokenResult = {
+        token: {
+          ignored: true,
+          type: 'Ignored',
           value: input,
-        })
-      })
+        },
+        remainingInput: input,
+      }
+      expect(actual).toEqual(expected)
+    })
+  })
 
-      it('should return the Punctuator', () => {
-        const actual = getToken(input)
-        const expected: Token = {
+  describe('when it is Punctuator', () => {
+    beforeEach(() => {
+      jest.spyOn(punctuator, 'getToken').mockReturnValue({
+        token: {
           type: 'Punctuator',
           value: input,
-        }
-        expect(actual).toEqual(expected)
+        },
+        remainingInput: input,
       })
+    })
+
+    it('should return the Punctuator', () => {
+      const actual = getToken(input)
+      const expected: GetTokenResult = {
+        token: {
+          type: 'Punctuator',
+          value: input,
+        },
+        remainingInput: input,
+      }
+      expect(actual).toEqual(expected)
     })
   })
 })

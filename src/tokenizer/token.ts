@@ -1,6 +1,7 @@
-import {GetToken} from './types'
-import * as punctuator from './punctuator'
 import * as ignored from './ignored'
+import * as punctuator from './punctuator'
+import {GetToken} from './types'
+import {getFirstTokenMatch} from './util'
 
 /*
 Token ::
@@ -12,6 +13,10 @@ Token ::
 */
 
 export const getToken: GetToken = (input) => {
-  return ignored.getToken(input)
-    || punctuator.getToken(input)
+  const matchers = getFirstTokenMatch([
+    ignored.getToken,
+    punctuator.getToken,
+  ])
+  const result = matchers(input)
+  return result
 }
