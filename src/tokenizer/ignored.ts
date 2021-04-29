@@ -1,4 +1,5 @@
-import {GetToken, Ignored} from './types'
+import {GetToken} from './types'
+import {getFirstTokenMatch} from './util'
 
 /*
 Ignored ::
@@ -21,14 +22,21 @@ const unicodeBOM: {
 } = {
   getToken: (input) => {
     const BOM = '\uFEFF'
-    return input === BOM
-    ? {
-      ignored: true,
-      type: 'UnicodeBOM',
-      value: input,
+    if (input === BOM) {
+      return {
+        token: {
+          ignored: true,
+          type: 'UnicodeBOM',
+          value: input,
+        },
+        remainingInput: '',
+      }
     }
-    : null
-  }
+    return {
+      token: null,
+      remainingInput: input,
+    }
+  },
 }
 
 const whiteSpace: {
@@ -36,19 +44,27 @@ const whiteSpace: {
 } = {
   getToken: (input) => {
     return [
-    '\u0009',
+      '\u0009',
       '\u0020',
     ].includes(input)
-    ? {
-      ignored: true,
-      type: 'WhiteSpace',
-      value: input,
-    }
-    : null
-  }
+      ? {
+        token: {
+          ignored: true,
+          type: 'WhiteSpace',
+          value: input,
+        },
+        remainingInput: '',
+      }
+        : {
+          token: null,
+          remainingInput: input,
+        }
+  },
 }
 
 export const getToken: GetToken = (input) => {
-  return unicodeBOM.getToken(input)
-    || whiteSpace.getToken(input)
+  return getFirstTokenMatch([
+    unicodeBOM.getToken,
+    whiteSpace.getToken,
+  ])(input)
 }
