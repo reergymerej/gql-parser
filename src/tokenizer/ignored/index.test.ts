@@ -1,5 +1,6 @@
 import * as ignored from '.'
 import * as util from '../util'
+import comma from './comma'
 import comment from './comment'
 import lineTerminator from './line-terminator'
 import unicodeBOM from './unicode-BOM'
@@ -23,6 +24,7 @@ describe('terminals', () => {
       whiteSpace,
       lineTerminator,
       comment,
+      comma,
     ])
   })
 })
