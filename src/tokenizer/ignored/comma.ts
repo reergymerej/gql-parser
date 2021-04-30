@@ -5,7 +5,6 @@ Comma::
   ,
 */
 
-
 const getToken: GetToken = (input) => {
   const head = input[0]
   const tail = input.slice(1)

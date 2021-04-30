@@ -77,3 +77,25 @@ describe('ignored', () => {
     })
   })
 })
+
+xdescribe('integration', () => {
+  it('should return a bunch of tokens', () => {
+    let input = `,
+  # Look at all this sweet comment!
+  ,
+  # Look at all this sweet comment!
+  \t\t
+  # It is pretty cool.
+    `
+
+    const tokens = []
+    console.log(input)
+    while (input) {
+      const r = ignored.getToken(input)
+      tokens.push(r.token)
+      input = r.remainingInput
+      // console.log(input)
+    }
+    console.log(tokens)
+  })
+})

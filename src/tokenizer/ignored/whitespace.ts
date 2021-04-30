@@ -1,12 +1,12 @@
+import {GetToken} from '../types'
+
 /*
 WhiteSpace ::
   Horizontal Tab (U+0009)
   Space (U+0020)
 */
 
-import {GetToken} from "../types"
-
-const getToken: GetToken = (input) => {
+const getToken: GetToken = function GetWhiteSpace(input) {
   const char = input[0]
   const isMatch = [
     '\u0009',

@@ -1,12 +1,12 @@
+import {GetToken, GetTokenResult} from '../types'
+import {getFirstTokenMatch} from '../util'
+
 /*
 LineTerminator ::
   New Line (U+000A)
   Carriage Return (U+000D) [lookahead != New Line (U+000A)]
   Carriage Return (U+000D) New Line (U+000A)
 */
-
-import {GetToken} from '../types'
-import {getFirstTokenMatch} from '../util'
 
 const one: GetToken = (input) => {
   const char = input[0]
@@ -65,12 +65,19 @@ const three: GetToken = (input) => {
   }
 }
 
-export const getToken: GetToken = (input) => {
-  return getFirstTokenMatch([
+export const getToken: GetToken = function GetLineTerminator(input) {
+  const getTokenResult: GetTokenResult | null = getFirstTokenMatch([
     one,
     two,
     three,
   ])(input)
+  if (getTokenResult) {
+    return getTokenResult
+  }
+  return {
+    token: null,
+    remainingInput: input
+  }
 }
 
 export default getToken

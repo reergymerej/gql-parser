@@ -5,7 +5,7 @@ UnicodeBOM ::
 
 import {GetToken} from '../types'
 
-const getToken: GetToken = (input) => {
+const getToken: GetToken = function GetUnicodeBOM(input) {
   const BOM = '\uFEFF'
   const char = input[0]
   if (char === BOM) {
