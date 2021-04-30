@@ -7,6 +7,8 @@ import {GetToken, GetTokenResult} from '../types'
 import {getFirstTokenMatch} from '../util'
 
 /*
+https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Ignored-Tokens
+
 Ignored ::
   UnicodeBOM
   WhiteSpace
