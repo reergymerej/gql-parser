@@ -72,3 +72,5 @@ export const getToken: GetToken = (input) => {
     three,
   ])(input)
 }
+
+export default getToken

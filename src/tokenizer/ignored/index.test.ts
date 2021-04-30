@@ -1,6 +1,31 @@
-
-import {GetTokenResult} from '../types'
 import * as ignored from '.'
+import * as util from '../util'
+import comment from './comment'
+import lineTerminator from './line-terminator'
+import unicodeBOM from './unicode-BOM'
+import whiteSpace from './whitespace'
+import {GetTokenResult} from '../types'
+
+describe('terminals', () => {
+  beforeEach(() => {
+    jest.spyOn(util, 'getFirstTokenMatch')
+  })
+
+  it('should use the correct terminals', () => {
+    try {
+      ignored.getToken('1')
+    } catch {}
+    // Some of these are implicit with the tests below.  Some have been tested
+    // in their own module, though.  This is really just checking that things
+    // are wired correctly.
+    expect(util.getFirstTokenMatch).toHaveBeenCalledWith([
+      unicodeBOM,
+      whiteSpace,
+      lineTerminator,
+      comment,
+    ])
+  })
+})
 
 describe('ignored', () => {
   it('should return the UnicodeBOM', () => {
