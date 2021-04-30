@@ -1,11 +1,11 @@
 import {GetTokenResult} from '../types'
-import stub from './stub-gettoken'
+import intValue from './int-value'
 
-describe('Stub', () => {
+describe('IntValue', () => {
   describe('negative test', () => {
-    it('should NOT return the Stub', () => {
-      const input = '#This is not a Stub.'
-      const actual = stub(input)
+    it('should NOT return the IntValue', () => {
+      const input = '#This is not a IntValue.'
+      const actual = intValue(input)
       const expected: GetTokenResult = {
         token: null,
         remainingInput: input,
@@ -14,14 +14,14 @@ describe('Stub', () => {
     })
   })
 
-  xit('should return the Stub', () => {
+  xit('should return the IntValue', () => {
     const head = 'XXX'
     const remainingInput = '#and then other stuff'
     const input = `${head}${remainingInput}`
-    const actual = stub(input)
+    const actual = intValue(input)
     const expected: GetTokenResult = {
       token: {
-        type: 'Stub',
+        type: 'IntValue',
         value: head,
       },
       remainingInput: remainingInput,
