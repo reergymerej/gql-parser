@@ -40,6 +40,10 @@ export const isDigit = (char: string): boolean => {
   ].includes(char)
 }
 
+export const isNonZeroDigit = (char: string): boolean => {
+  return char !== '0' && isDigit(char)
+}
+
 const getToken: GetToken = function IntValue(input) {
   const head = input[0]
   const tail = input.slice(1)
