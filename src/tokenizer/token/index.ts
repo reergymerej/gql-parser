@@ -1,4 +1,8 @@
+import floatValue from './stub'
+import intValue from './stub'
+import name from './stub'
 import punctuator from './punctuator'
+import stringValue from './stub'
 import {GetToken, GetTokenResult} from '../types'
 import {getFirstTokenMatch} from '../util'
 
@@ -16,6 +20,10 @@ export const getToken: GetToken = (input) => {
   const getTokenResult: GetTokenResult | null =
     getFirstTokenMatch([
       punctuator,
+      name,
+      intValue,
+      floatValue,
+      stringValue,
     ])(input)
   if (getTokenResult) {
     return getTokenResult

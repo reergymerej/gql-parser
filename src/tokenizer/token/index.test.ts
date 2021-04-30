@@ -1,7 +1,10 @@
 import * as token from '.'
 import * as util from '../util'
+import floatValue from './stub'
+import intValue from './stub'
+import name from './stub'
 import punctuator from './punctuator'
-import {GetTokenResult} from '../types'
+import stringValue from './stub'
 
 describe('terminals', () => {
   beforeEach(() => {
@@ -14,6 +17,10 @@ describe('terminals', () => {
     } catch {}
     expect(util.getFirstTokenMatch).toHaveBeenCalledWith([
       punctuator,
+      name,
+      intValue,
+      floatValue,
+      stringValue,
     ])
   })
 })
