@@ -1,7 +1,3 @@
-import {GetToken} from '../types'
-import {getFirstTokenMatch} from '../util'
-import whiteSpace from './whitespace'
-
 /*
 Ignored ::
   UnicodeBOM
@@ -9,38 +5,16 @@ Ignored ::
   LineTerminator
   Comment
   Comma
-
-UnicodeBOM ::
-  Byte Order Mark (U+FEFF)
 */
 
-const unicodeBOM: {
-  getToken: GetToken,
-} = {
-  getToken: (input) => {
-    const BOM = '\uFEFF'
-    const char = input[0]
-    if (char === BOM) {
-      const remainingInput = input.substring(1)
-      return {
-        token: {
-          ignored: true,
-          type: 'UnicodeBOM',
-          value: char,
-        },
-        remainingInput,
-      }
-    }
-    return {
-      token: null,
-      remainingInput: input,
-    }
-  },
-}
+import unicodeBOM from './unicode-BOM'
+import whiteSpace from './whitespace'
+import {GetToken} from '../types'
+import {getFirstTokenMatch} from '../util'
 
 export const getToken: GetToken = (input) => {
   return getFirstTokenMatch([
-    unicodeBOM.getToken,
+    unicodeBOM,
     whiteSpace,
   ])(input)
 }
