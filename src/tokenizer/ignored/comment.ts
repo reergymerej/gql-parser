@@ -7,6 +7,7 @@ CommentChar ::
 */
 
 import {GetToken} from "../types"
+import {findWhile, Predicate} from "../util"
 import lineTerminator from './line-terminator'
 
 /*
@@ -14,7 +15,15 @@ SourceCharacter ::
   /[\u0009\u000A\u000D\u0020-\uFFFF]/
 */
 
-const isCommentChar = (input: string): boolean => {
+const isToken = (getToken: GetToken): boolean => {
+  let isThisTypeOfToken: boolean = false
+  try {
+    isThisTypeOfToken = lineTerminator(input).token !== null
+  } catch {}
+  return isThisTypeOfToken
+}
+
+const isCommentChar: Predicate = input => {
   const isSourceChar =  /[\u0009\u000A\u000D\u0020-\uFFFF]/.test(input)
   let isLineTerminator: boolean = false
   try {
@@ -23,25 +32,7 @@ const isCommentChar = (input: string): boolean => {
   return isSourceChar && !isLineTerminator
 }
 
-type FindWhileResult = {
-  result: string
-  index: number
-}
-const findWhileCommentChar = (input: string): FindWhileResult => {
-  let i = 0
-  for (; i < input.length; i++) {
-    const char = input[i]
-    const isCorrectType = isCommentChar(char)
-    if (!isCorrectType) {
-      break
-    }
-  }
-  const result = input.substring(0, i)
-  return {
-    index: i,
-    result,
-  }
-}
+const findWhileCommentChar = findWhile(isCommentChar)
 
 const getToken: GetToken = (input) => {
   const head = input[0]

@@ -14,3 +14,25 @@ export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string)
   }
   return positiveTokenResult
 }
+
+export type Predicate = (input: string) => boolean
+
+type FindWhileResult = {
+  result: string
+  index: number
+}
+export const findWhile = (predicate: Predicate) => (input: string): FindWhileResult => {
+  let i = 0
+  for (; i < input.length; i++) {
+    const char = input[i]
+    const isCorrectType = predicate(char)
+    if (!isCorrectType) {
+      break
+    }
+  }
+  const result = input.substring(0, i)
+  return {
+    index: i,
+    result,
+  }
+}
