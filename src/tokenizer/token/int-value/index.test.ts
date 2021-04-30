@@ -1,5 +1,5 @@
-import {GetTokenResult} from '../types'
-import intValue from './int-value'
+import {GetTokenResult} from '../../types'
+import intValue, {isNegativeSign} from '../int-value'
 
 describe('IntValue', () => {
   describe('negative test', () => {
@@ -26,6 +26,16 @@ describe('IntValue', () => {
       },
       remainingInput: remainingInput,
     }
+    expect(actual).toEqual(expected)
+  })
+})
+
+describe('NegativeSign', () => {
+  it.each([
+    [ true, '-' ],
+    [ false, '!' ],
+  ])('should return %s for %s', (expected, value) => {
+    const actual = isNegativeSign(value)
     expect(actual).toEqual(expected)
   })
 })

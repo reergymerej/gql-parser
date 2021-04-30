@@ -1,4 +1,4 @@
-import {GetToken} from '../types'
+import {GetToken} from '../../types'
 
 /*
 IntValue ::
@@ -20,6 +20,10 @@ NonZeroDigit ::
 
 const isIntValue = (char: string): boolean => {
   return false
+}
+
+export const isNegativeSign = (char: string) => {
+  return char === '-'
 }
 
 const getToken: GetToken = function IntValue(input) {
