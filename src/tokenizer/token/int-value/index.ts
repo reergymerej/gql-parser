@@ -22,8 +22,22 @@ const isIntValue = (char: string): boolean => {
   return false
 }
 
-export const isNegativeSign = (char: string) => {
+export const isNegativeSign = (char: string): boolean => {
   return char === '-'
+}
+
+export const isDigit = (char: string): boolean => {
+  return [ '0' ,
+    '1' ,
+    '2' ,
+    '3' ,
+    '4' ,
+    '5' ,
+    '6' ,
+    '7' ,
+    '8' ,
+    '9',
+  ].includes(char)
 }
 
 const getToken: GetToken = function IntValue(input) {
