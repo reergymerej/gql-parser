@@ -1,20 +1,23 @@
 import {GetToken} from '../types'
+import {findWhile} from '../util'
 
-/*
-Stub :: one of
-*/
+// Name ::
+//   /[_A-Za-z][_0-9A-Za-z]*/
 
-const isStub = (char: string): boolean => {
-  return false
+const isName = (input: string): boolean => {
+  return /[_A-Za-z][_0-9A-Za-z]*/.test(input)
 }
 
-const getToken: GetToken = function Stub(input) {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (isStub(head)) {
+const findWhileIsName = findWhile(isName)
+
+const getToken: GetToken = function Name(input) {
+  const { index, result } = findWhileIsName(input)
+  const head = result
+  const tail = input.slice(index)
+  if (head) {
     return {
       token: {
-          type: 'Stub',
+          type: 'Name',
           value: head,
       },
       remainingInput: tail,
