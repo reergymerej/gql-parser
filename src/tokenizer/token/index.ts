@@ -1,6 +1,6 @@
 import floatValue from './stub'
 import intValue from './stub'
-import name from './stub'
+import name from './name'
 import punctuator from './punctuator'
 import stringValue from './stub'
 import {GetToken, GetTokenResult} from '../types'
