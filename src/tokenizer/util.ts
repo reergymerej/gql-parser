@@ -1,4 +1,4 @@
-import {GetToken, GetTokenResult} from "./types"
+import {GetToken, GetTokenResult} from './types'
 
 export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string): GetTokenResult => {
   let positiveTokenResult: GetTokenResult | null = null
@@ -36,3 +36,12 @@ export const findWhile = (predicate: Predicate) => (input: string): FindWhileRes
     result,
   }
 }
+
+export const isToken = (getToken: GetToken) => (input: string): boolean => {
+  let isThisTypeOfToken = false
+  try {
+    isThisTypeOfToken = getToken(input).token !== null
+  } catch {}
+  return isThisTypeOfToken
+}
+

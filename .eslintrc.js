@@ -17,5 +17,10 @@ module.exports = {
       'error',
       'single',
     ],
+    'no-empty': [
+      'error', {
+        'allowEmptyCatch': true,
+      }
+    ],
   },
 }

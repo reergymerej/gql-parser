@@ -6,8 +6,8 @@ CommentChar ::
   SourceCharacter but not LineTerminator
 */
 
-import {GetToken} from "../types"
-import {findWhile, Predicate} from "../util"
+import {GetToken} from '../types'
+import {findWhile, Predicate} from '../util'
 import lineTerminator from './line-terminator'
 
 /*
@@ -15,21 +15,20 @@ SourceCharacter ::
   /[\u0009\u000A\u000D\u0020-\uFFFF]/
 */
 
-const isToken = (getToken: GetToken): boolean => {
-  let isThisTypeOfToken: boolean = false
+const isToken = (getToken: GetToken) => (input: string): boolean => {
+  let isThisTypeOfToken = false
   try {
-    isThisTypeOfToken = lineTerminator(input).token !== null
+    isThisTypeOfToken = getToken(input).token !== null
   } catch {}
   return isThisTypeOfToken
 }
 
+const isLineTerminator = isToken(lineTerminator)
+
 const isCommentChar: Predicate = input => {
+  // eslint-disable-next-line no-control-regex
   const isSourceChar =  /[\u0009\u000A\u000D\u0020-\uFFFF]/.test(input)
-  let isLineTerminator: boolean = false
-  try {
-    isLineTerminator = lineTerminator(input).token !== null
-  } catch {}
-  return isSourceChar && !isLineTerminator
+  return isSourceChar && !isLineTerminator(input)
 }
 
 const findWhileCommentChar = findWhile(isCommentChar)
