@@ -1,5 +1,6 @@
-import {GetToken} from './types'
-import {getFirstTokenMatch} from './util'
+import {GetToken} from '../types'
+import {getFirstTokenMatch} from '../util'
+import whiteSpace from './whitespace'
 
 /*
 Ignored ::
@@ -11,10 +12,6 @@ Ignored ::
 
 UnicodeBOM ::
   Byte Order Mark (U+FEFF)
-
-WhiteSpace ::
-  Horizontal Tab (U+0009)
-  Space (U+0020)
 */
 
 const unicodeBOM: {
@@ -41,36 +38,9 @@ const unicodeBOM: {
   },
 }
 
-const whiteSpace: {
-  getToken: GetToken,
-} = {
-  getToken: (input) => {
-    const char = input[0]
-    const isMatch = [
-      '\u0009',
-      '\u0020',
-    ].includes(char)
-    if (isMatch) {
-      const remainingInput = input.substring(1)
-      return {
-        token: {
-          ignored: true,
-          type: 'WhiteSpace',
-          value: char,
-        },
-        remainingInput,
-      }
-    }
-    return {
-      token: null,
-      remainingInput: input,
-    }
-  },
-}
-
 export const getToken: GetToken = (input) => {
   return getFirstTokenMatch([
     unicodeBOM.getToken,
-    whiteSpace.getToken,
+    whiteSpace,
   ])(input)
 }

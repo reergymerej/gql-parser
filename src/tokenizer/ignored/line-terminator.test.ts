@@ -1,4 +1,4 @@
-import {GetTokenResult} from './types'
+import {GetTokenResult} from '../types'
 import * as lineTerminator from './line-terminator'
 
 describe('LineTerminator', () => {

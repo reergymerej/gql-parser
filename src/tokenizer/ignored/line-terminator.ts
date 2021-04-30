@@ -5,8 +5,8 @@ LineTerminator ::
   Carriage Return (U+000D) New Line (U+000A)
 */
 
-import {GetToken} from './types'
-import {getFirstTokenMatch} from './util'
+import {GetToken} from '../types'
+import {getFirstTokenMatch} from '../util'
 
 const one: GetToken = (input) => {
   const char = input[0]
