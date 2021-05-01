@@ -14,8 +14,8 @@ describe('IntValue', () => {
     })
   })
 
-  xit('should return the IntValue', () => {
-    const head = 'XXX'
+  it('should return the IntValue', () => {
+    const head = '-1234'
     const remainingInput = '#and then other stuff'
     const input = `${head}${remainingInput}`
     const actual = intValue(input)
@@ -109,7 +109,7 @@ describe('IntegerPart', () => {
       expect(actual).toEqual(expected)
     })
 
-    xit('should return the IntegerPart', () => {
+    it('should return the IntegerPart', () => {
       const head = '0'
       const remainingInput = '#and then other stuff'
       const input = `${head}${remainingInput}`

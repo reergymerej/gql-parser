@@ -1,4 +1,4 @@
-import {GetToken} from '../../types'
+import {GetToken, GetTokenResult, Token} from '../../types'
 import {findWhile} from '../../util'
 
 /*
@@ -87,22 +87,33 @@ export const getIntegerPart: GetToken = (input) => {
   }
 }
 
+interface WithToken {
+  token: Token,
+}
+type ChangeType = (result: GetTokenResult & WithToken, type: string) => GetTokenResult
+
+const changeType: ChangeType = (getTokenResult, type) => {
+  return {
+    ...getTokenResult,
+    token: {
+      ...getTokenResult.token,
+      type: 'IntValue',
+    },
+  }
+}
+
 const getToken: GetToken = function IntValue(input) {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (isIntValue(head)) {
+  const integerPart = getIntegerPart(input)
+  if (integerPart.token) {
     return {
+      ...integerPart,
       token: {
-          type: 'IntValue',
-          value: head,
+        ...integerPart.token,
+        type: 'IntValue',
       },
-      remainingInput: tail,
     }
   }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+  return integerPart
 }
 
 export default getToken

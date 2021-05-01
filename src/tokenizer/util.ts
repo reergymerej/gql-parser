@@ -1,4 +1,4 @@
-import {GetToken, GetTokenResult} from './types'
+import {GetToken, GetTokenResult, Token} from './types'
 
 export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string): GetTokenResult | null => {
   let positiveTokenResult: GetTokenResult | null = null
@@ -46,3 +46,16 @@ export const isToken = (getToken: GetToken) => (input: string): boolean => {
   return isThisTypeOfToken
 }
 
+interface WithToken {
+  token: Token,
+}
+type ChangeType = (result: GetTokenResult & WithToken, type: string) => GetTokenResult
+export const changeType: ChangeType = (getTokenResult, type) => {
+  return {
+    ...getTokenResult,
+    token: {
+      ...getTokenResult.token,
+      type,
+    },
+  }
+}
