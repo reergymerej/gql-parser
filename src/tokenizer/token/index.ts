@@ -1,4 +1,4 @@
-import floatValue from './stub'
+import floatValue from './float-value'
 import intValue from './int-value'
 import name from './name'
 import punctuator from './punctuator'

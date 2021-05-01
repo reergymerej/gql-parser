@@ -1,6 +1,6 @@
 import * as token from '.'
 import * as util from '../util'
-import floatValue from './stub'
+import floatValue from './float-value'
 import intValue from './int-value'
 import name from './name'
 import punctuator from './punctuator'

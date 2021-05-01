@@ -1,4 +1,4 @@
-import {GetToken, GetTokenResult, Token} from '../../types'
+import {GetToken} from '../../types'
 import {findWhile} from '../../util'
 
 /*
@@ -18,10 +18,6 @@ Digit :: one of
 NonZeroDigit ::
   Digit but not 0
 */
-
-const isIntValue = (char: string): boolean => {
-  return false
-}
 
 export const isNegativeSign = (char: string): boolean => {
   return char === '-'
@@ -84,21 +80,6 @@ export const getIntegerPart: GetToken = (input) => {
   return {
     token: null,
     remainingInput: input,
-  }
-}
-
-interface WithToken {
-  token: Token,
-}
-type ChangeType = (result: GetTokenResult & WithToken, type: string) => GetTokenResult
-
-const changeType: ChangeType = (getTokenResult, type) => {
-  return {
-    ...getTokenResult,
-    token: {
-      ...getTokenResult.token,
-      type: 'IntValue',
-    },
   }
 }
 
