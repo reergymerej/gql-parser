@@ -7,15 +7,11 @@ FloatValue ::
   IntegerPart ExponentPart
   IntegerPart FractionalPart ExponentPart
 
-
 FractionalPart ::
   . Digit (list)
 
 ExponentPart ::
   ExponentIndicator Sign (opt) Digit (list)
-
-ExponentIndicator ::
-  e E
 */
 
 // IntegerPart FractionalPart ExponentPart
