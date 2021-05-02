@@ -15,7 +15,7 @@ describe('FloatValue', () => {
   })
 
   xit('should return the FloatValue', () => {
-    const head = '-1234'
+    const head = '-1234.567e-9'
     const remainingInput = '#and then other stuff'
     const input = `${head}${remainingInput}`
     const actual = floatValue(input)

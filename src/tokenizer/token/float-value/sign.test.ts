@@ -1,11 +1,11 @@
-import {GetTokenResult} from '../types'
-import stub from './stub-gettoken'
+import {GetTokenResult} from '../../types'
+import sign from './sign'
 
-describe('Stub', () => {
+describe('Sign', () => {
   describe('negative test', () => {
-    it('should NOT return the Stub', () => {
-      const input = '#This is not a Stub.'
-      const actual = stub(input)
+    it('should NOT return the Sign', () => {
+      const input = '#This is not a Sign.'
+      const actual = sign(input)
       const expected: GetTokenResult = {
         token: null,
         remainingInput: input,
@@ -14,16 +14,16 @@ describe('Stub', () => {
     })
   })
 
-  xit.each([
+  it.each([
     '+',
     '-',
-  ])('should return the Stub for %s', (head) => {
+  ])('should return the Sign for %s', (head) => {
     const remainingInput = '#and then other stuff'
     const input = `${head}${remainingInput}`
-    const actual = stub(input)
+    const actual = sign(input)
     const expected: GetTokenResult = {
       token: {
-        type: 'Stub',
+        type: 'Sign',
         value: head,
       },
       remainingInput: remainingInput,
