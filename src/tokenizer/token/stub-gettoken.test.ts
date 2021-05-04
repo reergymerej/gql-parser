@@ -2,9 +2,12 @@ import {GetTokenResult} from '../types'
 import stub from './stub-gettoken'
 
 describe('Stub', () => {
-  describe('negative test', () => {
-    it('should NOT return the Stub', () => {
-      const input = '#This is not a Stub.'
+  describe('negative tests', () => {
+    it.each([
+      '',
+    ])('should not find a Stub for %s', (head) => {
+      const remainingInput = '#and then other stuff'
+      const input = `${head}${remainingInput}`
       const actual = stub(input)
       const expected: GetTokenResult = {
         token: null,
@@ -14,20 +17,22 @@ describe('Stub', () => {
     })
   })
 
-  xit.each([
-    '+',
-    '-',
-  ])('should return the Stub for %s', (head) => {
-    const remainingInput = '#and then other stuff'
-    const input = `${head}${remainingInput}`
-    const actual = stub(input)
-    const expected: GetTokenResult = {
-      token: {
-        type: 'Stub',
-        value: head,
-      },
-      remainingInput: remainingInput,
-    }
-    expect(actual).toEqual(expected)
+  xdescribe('positive tests', () => {
+    it.each([
+      '+',
+      '-',
+    ])('should return the Stub for %s', (head) => {
+      const remainingInput = '#and then other stuff'
+      const input = `${head}${remainingInput}`
+      const actual = stub(input)
+      const expected: GetTokenResult = {
+        token: {
+          type: 'Stub',
+          value: head,
+        },
+        remainingInput: remainingInput,
+      }
+      expect(actual).toEqual(expected)
+    })
   })
 })

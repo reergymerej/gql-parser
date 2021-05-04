@@ -38,6 +38,25 @@ export const findWhile = (predicate: Predicate) => (input: string): FindWhileRes
   }
 }
 
+type GetWhilePredicate = (input: string) => FindWhileResult
+export const getWhile = (input: string, predicate: GetWhilePredicate): {
+  remainingInput: string,
+  value: string,
+} => {
+  const digitsResult = predicate(input)
+  if (digitsResult.result.length) {
+    const remainingInput = input.substring(digitsResult.index)
+    return {
+      value: digitsResult.result,
+      remainingInput,
+    }
+  }
+  return {
+    value: '',
+    remainingInput: input,
+  }
+}
+
 export const isToken = (getToken: GetToken) => (input: string): boolean => {
   let isThisTypeOfToken = false
   try {

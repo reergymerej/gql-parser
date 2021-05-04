@@ -2,9 +2,14 @@ import {GetTokenResult} from '../types'
 import fractionalPart from './fractional-part'
 
 describe('FractionalPart', () => {
-  describe('negative test', () => {
-    it('should NOT return the FractionalPart', () => {
-      const input = '#This is not a FractionalPart.'
+  describe('negative tests', () => {
+    it.each([
+      '',
+      'dddddddddddd',
+      '.',
+    ])('should not find a FractionalPart for %s', (head) => {
+      const remainingInput = '#and then other stuff'
+      const input = `${head}${remainingInput}`
       const actual = fractionalPart(input)
       const expected: GetTokenResult = {
         token: null,

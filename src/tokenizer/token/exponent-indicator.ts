@@ -1,4 +1,5 @@
 import {GetToken} from '../types'
+import {findWhile} from '../util'
 
 /*
 ExponentIndicator ::
@@ -32,4 +33,4 @@ const getToken: GetToken = function ExponentIndicator(input) {
 
 export default getToken
 
-
+export const findWhileIsExponentIndicator = findWhile(isExponentIndicator)

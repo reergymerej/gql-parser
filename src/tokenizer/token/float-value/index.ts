@@ -6,12 +6,6 @@ FloatValue ::
   IntegerPart FractionalPart
   IntegerPart ExponentPart
   IntegerPart FractionalPart ExponentPart
-
-FractionalPart ::
-  . Digit (list)
-
-ExponentPart ::
-  ExponentIndicator Sign (opt) Digit (list)
 */
 
 // IntegerPart FractionalPart ExponentPart

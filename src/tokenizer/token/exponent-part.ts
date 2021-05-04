@@ -1,23 +1,24 @@
 import {GetToken} from '../types'
 import {getWhile} from '../util'
 import {findWhileIsDigit} from './digit'
+import {findWhileIsExponentIndicator} from './exponent-indicator'
 
 /*
-FractionalPart ::
-  . Digit (list)
+ExponentPart ::
+  ExponentIndicator Sign (opt) Digit (list)
 */
 
-const getToken: GetToken = function FractionalPart(input) {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (head === '.') {
+const getToken: GetToken = function ExponentPart(input) {
+  const exponentIndicator = getWhile(input, findWhileIsExponentIndicator)
+  if (exponentIndicator.value) {
+    const tail = exponentIndicator.remainingInput
     const digits = getWhile(tail, findWhileIsDigit)
     if (digits.value.length) {
-      const value = `${head}${digits.value}`
+      const value = `${exponentIndicator.value}${digits.value}`
       const remainingInput = digits.remainingInput
       return {
         token: {
-            type: 'FractionalPart',
+            type: 'ExponentPart',
             value,
         },
         remainingInput,
