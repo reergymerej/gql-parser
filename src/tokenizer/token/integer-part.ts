@@ -1,17 +1,12 @@
 import {GetToken} from '../types'
-import {findWhile} from '../util'
-import {isDigit} from './digit'
-import {isNegativeSign} from './negative-sign'
+import {findWhileIsDigit, isDigit} from './digit'
+import {findWhileNegativeSign} from './negative-sign'
 
 /*
 IntegerPart ::
   NegativeSign (opt) 0
   NegativeSign (opt) NonZeroDigit Digit (list, opt)
 */
-
-const findWhileNegativeSign = findWhile(isNegativeSign)
-
-const findWhileIsDigit = findWhile(isDigit)
 
 const getNegativeSign = (input: string): string => {
   return findWhileNegativeSign(input).result
