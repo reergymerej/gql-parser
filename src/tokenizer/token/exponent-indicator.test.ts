@@ -1,11 +1,11 @@
-import {GetTokenResult} from '../../types'
-import sign from './sign'
+import {GetTokenResult} from '../types'
+import exponentIndicator from './exponent-indicator'
 
-describe('Sign', () => {
+describe('ExponentIndicator', () => {
   describe('negative test', () => {
-    it('should NOT return the Sign', () => {
-      const input = '#This is not a Sign.'
-      const actual = sign(input)
+    it('should NOT return the ExponentIndicator', () => {
+      const input = '#This is not a ExponentIndicator.'
+      const actual = exponentIndicator(input)
       const expected: GetTokenResult = {
         token: null,
         remainingInput: input,
@@ -15,15 +15,15 @@ describe('Sign', () => {
   })
 
   it.each([
-    '+',
-    '-',
-  ])('should return the Sign for %s', (head) => {
+    'e',
+    'E',
+  ])('should return the ExponentIndicator for %s', (head) => {
     const remainingInput = '#and then other stuff'
     const input = `${head}${remainingInput}`
-    const actual = sign(input)
+    const actual = exponentIndicator(input)
     const expected: GetTokenResult = {
       token: {
-        type: 'Sign',
+        type: 'ExponentIndicator',
         value: head,
       },
       remainingInput: remainingInput,

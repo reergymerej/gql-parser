@@ -1,4 +1,4 @@
-import {GetToken} from '../../types'
+import {GetToken} from '../types'
 
 /*
 Sign :: one of

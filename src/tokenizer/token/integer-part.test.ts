@@ -1,4 +1,4 @@
-import {GetTokenResult} from '../../types'
+import {GetTokenResult} from '../types'
 import {getIntegerPart} from './integer-part'
 
 describe('IntegerPart', () => {

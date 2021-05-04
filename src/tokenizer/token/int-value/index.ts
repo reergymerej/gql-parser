@@ -1,13 +1,9 @@
 import {GetToken} from '../../types'
-import {getIntegerPart} from './integer-part'
+import {getIntegerPart} from '../integer-part'
 
 /*
 IntValue ::
   IntegerPart
-
-IntegerPart ::
-  NegativeSign (opt) 0
-  NegativeSign (opt) NonZeroDigit Digit (list, opt)
 */
 
 const getToken: GetToken = function IntValue(input) {
