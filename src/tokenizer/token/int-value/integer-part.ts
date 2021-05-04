@@ -1,6 +1,7 @@
-import {isDigit, isNegativeSign} from '.'
 import {GetToken} from '../../types'
 import {findWhile} from '../../util'
+import {isDigit} from '../digit'
+import {isNegativeSign} from '../negative-sign'
 
 /*
 IntegerPart ::

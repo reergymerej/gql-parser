@@ -1,9 +1,12 @@
 import {GetTokenResult} from '../../types'
-import intValue, {isDigit, isNegativeSign, isNonZeroDigit} from '../int-value'
+import {isDigit} from '../digit'
+import intValue from '../int-value'
+import {isNegativeSign} from '../negative-sign'
+import {isNonZeroDigit} from '../non-zero-digit'
 
 describe('IntValue', () => {
   describe('negative test', () => {
-    fit('should NOT return the IntValue', () => {
+    it('should NOT return the IntValue', () => {
       const input = '#This is not a IntValue.'
       const actual = intValue(input)
       const expected: GetTokenResult = {
