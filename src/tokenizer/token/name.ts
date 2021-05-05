@@ -1,5 +1,5 @@
 import {GetToken} from '../types'
-import {findWhile} from '../util'
+import {findWhileByCharacter} from '../util'
 
 // Name ::
 //   /[_A-Za-z][_0-9A-Za-z]*/
@@ -8,7 +8,7 @@ const isName = (input: string): boolean => {
   return /[_A-Za-z][_0-9A-Za-z]*/.test(input)
 }
 
-const findWhileIsName = findWhile(isName)
+const findWhileIsName = findWhileByCharacter(isName)
 
 const getToken: GetToken = function Name(input) {
   const { index, result } = findWhileIsName(input)

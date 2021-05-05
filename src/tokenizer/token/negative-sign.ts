@@ -1,4 +1,4 @@
-import {findWhile} from "../util"
+import {findWhileByCharacter} from "../util"
 
 /*
 NegativeSign ::
@@ -8,4 +8,4 @@ export const isNegativeSign = (char: string): boolean => {
   return char === '-'
 }
 
-export const findWhileNegativeSign = findWhile(isNegativeSign)
+export const findWhileNegativeSign = findWhileByCharacter(isNegativeSign)

@@ -1,4 +1,4 @@
-import {findWhile} from '../util'
+import {findWhileByCharacter} from '../util'
 
 /*
 Digit :: one of
@@ -19,4 +19,4 @@ export const isDigit = (char: string): boolean => {
   ].includes(char)
 }
 
-export const findWhileIsDigit = findWhile(isDigit)
+export const findWhileIsDigit = findWhileByCharacter(isDigit)

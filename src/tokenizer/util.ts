@@ -19,46 +19,59 @@ export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string)
 export type Predicate = (input: string) => boolean
 
 type FindWhileResult = {
-  result: string
-  index: number
+  result: string,
+  index: number,
+  instanceCount: number,
 }
 
 export type FindWhileInput = (input: string) => FindWhileResult
 type FindWhile = (predicate: Predicate) => FindWhileInput
-export const findWhile: FindWhile = predicate => input => {
+export const findWhileByCharacter: FindWhile = predicate => input => {
   let i = 0
-  for (; i < input.length; i++) {
+  let instanceCount = 0
+  for (; i < input.length;) {
     // This is only looking one character at a time.
     // There is no reason the predicate can't handle more than one char.
     const char = input[i]
+    // const tail = input.substring(i)
     const isCorrectType = predicate(char)
     if (!isCorrectType) {
       break
     }
+    // TODO: increment tail by length of this instance
+    const instance = char
+    const instanceLength = instance.length
+    i += instanceLength
+    instanceCount++
   }
   const result = input.substring(0, i)
   return {
     index: i,
+    instanceCount,
     result,
   }
 }
 
 type GetWhilePredicate = (input: string) => FindWhileResult
-export const getWhile = (input: string, predicate: GetWhilePredicate): {
+type GetWhileResult = {
+  instanceCount: number,
   remainingInput: string,
   value: string,
-} => {
-  const digitsResult = predicate(input)
-  if (digitsResult.result.length) {
-    const remainingInput = input.substring(digitsResult.index)
+}
+export const getWhile = (input: string, predicate: GetWhilePredicate): GetWhileResult => {
+  const result = predicate(input)
+  if (result.result.length) {
+    const remainingInput = input.substring(result.index)
     return {
-      value: digitsResult.result,
+      instanceCount: result.instanceCount,
       remainingInput,
+      value: result.result,
     }
   }
   return {
-    value: '',
+    instanceCount: 0,
     remainingInput: input,
+    value: '',
   }
 }
 
@@ -96,23 +109,16 @@ export type Requirement = {
   count: Count
 }
 
-const requirementMet = (count: Count, value: string): boolean => {
-  // XXX
-  // This assumes each token has a length of one.  That is not right.  One
-  // "FloatValue" will be multiple characters.
+const requirementMet = (count: Count, instanceCount: number): boolean => {
   switch (count) {
     case Count.ONE:
-      return value.length === 1
-
+      return instanceCount === 1
     case Count.ONE_OR_FEWER:
-      return value.length <= 1
-
+      return instanceCount <= 1
     case Count.ONE_OR_MORE:
-      return value.length >= 1
-
+      return instanceCount >= 1
     case Count.ANY:
       return true
-
     default:
       throw new Error(`unhandled case "${Count[count]}"`)
   }
@@ -125,7 +131,10 @@ export const assembler = (requirements: Requirement[], input: string, type: stri
   for (let i = 0; i < requirements.length && allRequirementsMet; i++) {
     const requirement = requirements[i]
     const getWhileResult = getWhile(remainingInput, requirement.finder)
-    if (requirementMet(requirement.count, getWhileResult.value)) {
+    if (requirementMet(
+        requirement.count,
+        getWhileResult.instanceCount,
+      )) {
       value += getWhileResult.value
       remainingInput = getWhileResult.remainingInput
     } else {

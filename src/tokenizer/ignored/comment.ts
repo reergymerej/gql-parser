@@ -1,6 +1,6 @@
 import {isSourceChar} from '../source-character'
 import {GetToken} from '../types'
-import {assembler, changeType, Count, findWhile, isToken, Predicate, Requirement} from '../util'
+import {assembler, Count, findWhileByCharacter, isToken, Predicate, Requirement} from '../util'
 import lineTerminator from './line-terminator'
 
 /*
@@ -19,8 +19,8 @@ const isCommentChar: Predicate = input => {
 const isPound: Predicate = input => {
   return input === '#'
 }
-const findWhileCommentChar = findWhile(isCommentChar)
-const findWhileIsPound = findWhile(isPound)
+const findWhileCommentChar = findWhileByCharacter(isCommentChar)
+const findWhileIsPound = findWhileByCharacter(isPound)
 
 const getToken: GetToken = (input) => {
   const requirements: Requirement[] = [
