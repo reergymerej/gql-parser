@@ -14,18 +14,24 @@ describe('FloatValue', () => {
     })
   })
 
-  xit('should return the FloatValue', () => {
-    const head = '-1234.567e-9'
-    const remainingInput = '#and then other stuff'
-    const input = `${head}${remainingInput}`
-    const actual = floatValue(input)
-    const expected: GetTokenResult = {
-      token: {
-        type: 'FloatValue',
-        value: head,
-      },
-      remainingInput: remainingInput,
-    }
-    expect(actual).toEqual(expected)
+  xdescribe('positive tests', () => {
+    it.each([
+      '-0.1230', // one
+      '2e+10', // two
+      '6.0221413e23', // three
+      // '-',
+    ])('should return the FloatValue for %s', (head) => {
+      const remainingInput = '#and then other stuff'
+      const input = `${head}${remainingInput}`
+      const actual = floatValue(input)
+      const expected: GetTokenResult = {
+        token: {
+          type: 'FloatValue',
+          value: head,
+        },
+        remainingInput: remainingInput,
+      }
+      expect(actual).toEqual(expected)
+    })
   })
 })

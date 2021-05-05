@@ -17,11 +17,11 @@ describe('ExponentPart', () => {
   describe('positive tests', () => {
     it.each([
       'e123',
-      // 'E123',
-      // 'e-123',
-      // 'E-123',
-      // 'e+123',
-      // 'E+123',
+      'E123',
+      'e-123',
+      'E-123',
+      'e+123',
+      'E+123',
     ])('should return the ExponentPart for %s', (head) => {
       const remainingInput = '#and then other stuff'
       const input = `${head}${remainingInput}`

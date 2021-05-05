@@ -22,9 +22,14 @@ type FindWhileResult = {
   result: string
   index: number
 }
-export const findWhile = (predicate: Predicate) => (input: string): FindWhileResult => {
+
+export type FindWhileInput = (input: string) => FindWhileResult
+type FindWhile = (predicate: Predicate) => FindWhileInput
+export const findWhile: FindWhile = predicate => input => {
   let i = 0
   for (; i < input.length; i++) {
+    // This is only looking one character at a time.
+    // There is no reason the predicate can't handle more than one char.
     const char = input[i]
     const isCorrectType = predicate(char)
     if (!isCorrectType) {
@@ -76,5 +81,70 @@ export const changeType: ChangeType = (getTokenResult, type) => {
       ...getTokenResult.token,
       type,
     },
+  }
+}
+
+export enum Count {
+  ONE,
+  ONE_OR_FEWER,
+  ONE_OR_MORE,
+  ANY,
+}
+
+export type Requirement = {
+  finder: FindWhileInput
+  count: Count
+}
+
+const requirementMet = (count: Count, value: string): boolean => {
+  // XXX
+  // This assumes each token has a length of one.  That is not right.  One
+  // "FloatValue" will be multiple characters.
+  switch (count) {
+    case Count.ONE:
+      return value.length === 1
+
+    case Count.ONE_OR_FEWER:
+      return value.length <= 1
+
+    case Count.ONE_OR_MORE:
+      return value.length >= 1
+
+    case Count.ANY:
+      return true
+
+    default:
+      throw new Error(`unhandled case "${Count[count]}"`)
+  }
+}
+
+export const assembler = (requirements: Requirement[], input: string, type: string): GetTokenResult => {
+  let allRequirementsMet = true
+  let remainingInput = input
+  let value = ''
+  for (let i = 0; i < requirements.length && allRequirementsMet; i++) {
+    const requirement = requirements[i]
+    const getWhileResult = getWhile(remainingInput, requirement.finder)
+    if (requirementMet(requirement.count, getWhileResult.value)) {
+      value += getWhileResult.value
+      remainingInput = getWhileResult.remainingInput
+    } else {
+      allRequirementsMet = false
+      break
+    }
+  }
+
+  if (allRequirementsMet) {
+    return {
+      remainingInput,
+      token: {
+        type,
+        value,
+      },
+    }
+  }
+  return {
+    remainingInput: input,
+    token: null,
   }
 }

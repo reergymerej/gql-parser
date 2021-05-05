@@ -1,7 +1,8 @@
 import {GetToken} from '../types'
-import {getWhile} from '../util'
+import {assembler, Count, Requirement} from '../util'
 import {findWhileIsDigit} from './digit'
 import {findWhileIsExponentIndicator} from './exponent-indicator'
+import {findWhileIsSign} from './sign'
 
 /*
 ExponentPart ::
@@ -9,27 +10,25 @@ ExponentPart ::
 */
 
 const getToken: GetToken = function ExponentPart(input) {
-  const exponentIndicator = getWhile(input, findWhileIsExponentIndicator)
-  if (exponentIndicator.value) {
-    const tail = exponentIndicator.remainingInput
-    const digits = getWhile(tail, findWhileIsDigit)
-    if (digits.value.length) {
-      const value = `${exponentIndicator.value}${digits.value}`
-      const remainingInput = digits.remainingInput
-      return {
-        token: {
-            type: 'ExponentPart',
-            value,
-        },
-        remainingInput,
-      }
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+  const requirements: Requirement[] = [
+    {
+      finder: findWhileIsExponentIndicator,
+      count: Count.ONE,
+    },
+    {
+      finder: findWhileIsSign,
+      count: Count.ONE_OR_FEWER,
+    },
+    {
+      finder: findWhileIsDigit,
+      count: Count.ONE_OR_MORE,
+    },
+  ]
+  return assembler(
+    requirements,
+    input,
+    'ExponentPart',
+  )
 }
 
 export default getToken
-

@@ -1,4 +1,5 @@
 import {GetToken} from '../types'
+import {findWhile} from '../util'
 
 /*
 Sign :: one of
@@ -31,3 +32,4 @@ const getToken: GetToken = function Sign(input) {
 export default getToken
 
 
+export const findWhileIsSign = findWhile(isSign)

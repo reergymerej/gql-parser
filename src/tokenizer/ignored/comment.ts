@@ -1,6 +1,6 @@
 import {isSourceChar} from '../source-character'
 import {GetToken} from '../types'
-import {findWhile, isToken, Predicate} from '../util'
+import {assembler, changeType, Count, findWhile, isToken, Predicate, Requirement} from '../util'
 import lineTerminator from './line-terminator'
 
 /*
@@ -16,28 +16,32 @@ const isLineTerminator = isToken(lineTerminator)
 const isCommentChar: Predicate = input => {
   return isSourceChar(input) && !isLineTerminator(input)
 }
-
+const isPound: Predicate = input => {
+  return input === '#'
+}
 const findWhileCommentChar = findWhile(isCommentChar)
+const findWhileIsPound = findWhile(isPound)
 
 const getToken: GetToken = (input) => {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (head === '#') {
-    // We need to step through until we stop finding CommentChar.
-    const findResult = findWhileCommentChar(tail)
-    return {
-      token: {
-          type: 'Comment',
-          ignored: true,
-          value: `${head}${findResult.result}`,
-      },
-      remainingInput: input.substring(findResult.index + 1),
-    }
+  const requirements: Requirement[] = [
+    {
+      count: Count.ONE,
+      finder: findWhileIsPound,
+    },
+    {
+      count: Count.ANY,
+      finder: findWhileCommentChar,
+    },
+  ]
+  const assembled = assembler(
+    requirements,
+    input,
+    'Comment',
+  )
+  if (assembled.token) {
+    assembled.token.ignored = true
   }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+  return assembled
 }
 
 export default getToken
