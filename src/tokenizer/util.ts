@@ -1,3 +1,4 @@
+import {Count} from '../types'
 import {GetToken, GetTokenResult, Token} from './types'
 
 export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string): GetTokenResult | null => {
@@ -16,7 +17,7 @@ export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string)
   return positiveTokenResult
 }
 
-export type Predicate = (input: string) => boolean
+export type Predicate = (input: string, max?: Count) => boolean
 
 type FindWhileResult = {
   result: string,
@@ -25,16 +26,17 @@ type FindWhileResult = {
 }
 
 export type FindWhileInput = (input: string) => FindWhileResult
-type FindWhile = (predicate: Predicate) => FindWhileInput
-export const findWhileByCharacter: FindWhile = predicate => input => {
+type FindWhile = (predicate: Predicate, max?: Count) => FindWhileInput
+export const findWhileByCharacter: FindWhile = (predicate, max) => input => {
   let i = 0
   let instanceCount = 0
-  for (; i < input.length;) {
+  let hitCap = false
+  for (; i < input.length && !hitCap;) {
     // This is only looking one character at a time.
     // There is no reason the predicate can't handle more than one char.
     const char = input[i]
     // const tail = input.substring(i)
-    const isCorrectType = predicate(char)
+    const isCorrectType = predicate(char, max)
     if (!isCorrectType) {
       break
     }
@@ -43,6 +45,21 @@ export const findWhileByCharacter: FindWhile = predicate => input => {
     const instanceLength = instance.length
     i += instanceLength
     instanceCount++
+    if (max !== undefined) {
+      switch (max) {
+        case Count.ONE:
+        case Count.ONE_OR_FEWER:
+          hitCap = true
+          break
+        case Count.ONE_OR_MORE:
+        case Count.ANY:
+          hitCap = false
+          break
+        default:
+          throw new Error(`unhandled case "${Count[max]}"`)
+      }
+    }
+
   }
   const result = input.substring(0, i)
   return {
@@ -52,14 +69,14 @@ export const findWhileByCharacter: FindWhile = predicate => input => {
   }
 }
 
-type GetWhilePredicate = (input: string) => FindWhileResult
+type GetWhilePredicate = (input: string, max?: Count) => FindWhileResult
 type GetWhileResult = {
   instanceCount: number,
   remainingInput: string,
   value: string,
 }
-export const getWhile = (input: string, predicate: GetWhilePredicate): GetWhileResult => {
-  const result = predicate(input)
+export const getWhile = (input: string, predicate: GetWhilePredicate, max?: Count): GetWhileResult => {
+  const result = predicate(input, max)
   if (result.result.length) {
     const remainingInput = input.substring(result.index)
     return {
@@ -97,13 +114,6 @@ export const changeType: ChangeType = (getTokenResult, type) => {
   }
 }
 
-export enum Count {
-  ONE,
-  ONE_OR_FEWER,
-  ONE_OR_MORE,
-  ANY,
-}
-
 export type Requirement = {
   finder: FindWhileInput
   count: Count
@@ -130,7 +140,11 @@ export const assembler = (requirements: Requirement[], input: string, type: stri
   let value = ''
   for (let i = 0; i < requirements.length && allRequirementsMet; i++) {
     const requirement = requirements[i]
-    const getWhileResult = getWhile(remainingInput, requirement.finder)
+    const getWhileResult = getWhile(
+      remainingInput,
+      requirement.finder,
+      requirement.count,
+    )
     if (requirementMet(
         requirement.count,
         getWhileResult.instanceCount,

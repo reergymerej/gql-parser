@@ -13,3 +13,10 @@ type Definition =
   | TypeSystemExtension
 
 export type Document = Definition[]
+
+export enum Count {
+  ONE,
+  ONE_OR_FEWER,
+  ONE_OR_MORE,
+  ANY,
+}

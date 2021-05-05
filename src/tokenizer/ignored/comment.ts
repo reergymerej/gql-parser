@@ -1,6 +1,7 @@
+import {Count} from '../../types'
 import {isSourceChar} from '../source-character'
 import {GetToken} from '../types'
-import {assembler, Count, findWhileByCharacter, isToken, Predicate, Requirement} from '../util'
+import {assembler, findWhileByCharacter, isToken, Predicate, Requirement} from '../util'
 import lineTerminator from './line-terminator'
 
 /*

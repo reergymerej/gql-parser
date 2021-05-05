@@ -1,5 +1,6 @@
+import {Count} from '../../types'
 import {GetToken} from '../types'
-import {assembler, Count, findWhileByCharacter, Requirement} from '../util'
+import {assembler, findWhileByCharacter, Requirement} from '../util'
 
 /*
 ExponentIndicator ::

@@ -1,5 +1,6 @@
+import {Count} from '../../types'
 import {GetToken} from '../types'
-import {assembler, Count, Requirement} from '../util'
+import {assembler, Requirement} from '../util'
 import {findWhileIsDigit} from './digit'
 import {findWhileIsExponentIndicator} from './exponent-indicator'
 import {findWhileIsSign} from './sign'
