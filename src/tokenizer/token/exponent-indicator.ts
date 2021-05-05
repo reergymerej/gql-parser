@@ -1,5 +1,5 @@
 import {GetToken} from '../types'
-import {findWhileByCharacter} from '../util'
+import {assembler, Count, findWhileByCharacter, Requirement} from '../util'
 
 /*
 ExponentIndicator ::
@@ -13,24 +13,16 @@ const isExponentIndicator = (char: string): boolean => {
   ].includes(char)
 }
 
+export const findWhileIsExponentIndicator = findWhileByCharacter(isExponentIndicator)
+
 const getToken: GetToken = function ExponentIndicator(input) {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (isExponentIndicator(head)) {
-    return {
-      token: {
-          type: 'ExponentIndicator',
-          value: head,
-      },
-      remainingInput: tail,
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+  const requirements: Requirement[] = [
+    {
+      count: Count.ONE,
+      finder: findWhileIsExponentIndicator,
+    },
+  ]
+  return assembler(requirements, input, 'ExponentIndicator')
 }
 
 export default getToken
-
-export const findWhileIsExponentIndicator = findWhileByCharacter(isExponentIndicator)
