@@ -69,6 +69,9 @@ export const findWhileByCharacter: FindWhile = (predicate, max) => input => {
   }
 }
 
+// TODO: make one that is not by-character
+export const findWhile = findWhileByCharacter
+
 type GetWhilePredicate = (input: string, max?: Count) => FindWhileResult
 type GetWhileResult = {
   instanceCount: number,

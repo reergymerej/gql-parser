@@ -14,11 +14,11 @@ describe('FloatValue', () => {
     })
   })
 
-  xdescribe('positive tests', () => {
+  describe('positive tests', () => {
     it.each([
-      '-0.1230', // one
-      '2e+10', // two
-      '6.0221413e23', // three
+      // '-0.1230', // one
+      // '2e+10', // two
+      '6.0221413e23', // IntegerPart FractionalPart ExponentPart
       // '-',
     ])('should return the FloatValue for %s', (head) => {
       const remainingInput = '#and then other stuff'

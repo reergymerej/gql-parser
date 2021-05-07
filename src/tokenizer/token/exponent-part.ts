@@ -1,6 +1,6 @@
 import {Count} from '../../types'
 import {GetToken} from '../types'
-import {assembler, Requirement} from '../util'
+import {assembler, findWhile, Requirement} from '../util'
 import {findWhileIsDigit} from './digit'
 import {findWhileIsExponentIndicator} from './exponent-indicator'
 import {findWhileIsSign} from './sign'
@@ -33,3 +33,7 @@ const getToken: GetToken = function ExponentPart(input) {
 }
 
 export default getToken
+
+// TODO: implement
+const isExponentPart = () => true
+export const findWhileIsExponentPart = findWhile(isExponentPart)

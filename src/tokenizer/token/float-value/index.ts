@@ -1,5 +1,9 @@
+import {Count} from '../../../types'
 import {GetToken, GetTokenResult} from '../../types'
-import {getFirstTokenMatch} from '../../util'
+import {getFirstTokenMatch, Requirement} from '../../util'
+import {findWhileIsExponentPart} from '../exponent-part'
+import {findWhileIsFractionalPart} from '../fractional-part'
+import {findWhileIsIntegerPart} from '../integer-part'
 
 /*
 FloatValue ::
@@ -10,22 +14,21 @@ FloatValue ::
 
 // IntegerPart FractionalPart ExponentPart
 const three: GetToken = (input) => {
-  const char = input[0]
-  if (char === '\u000A') {
-    const remainingInput = input.substring(1)
-    return {
-      token: {
-        ignored: true,
-        type: 'LineTerminator',
-        value: char,
-      },
-      remainingInput,
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+  const requirements: Requirement[] = [
+    {
+      finder: findWhileIsIntegerPart,
+      count: Count.ONE,
+    },
+    {
+      finder: findWhileIsFractionalPart,
+      count: Count.ONE,
+    },
+    {
+      finder: findWhileIsExponentPart,
+      count: Count.ONE,
+    },
+  ]
+
 }
 
 const getToken: GetToken = function FloatValue(input) {

@@ -1,6 +1,6 @@
 import {Count} from '../../types'
 import {GetToken, GetTokenResult} from '../types'
-import {assembler, findWhileByCharacter} from '../util'
+import {assembler, findWhile, findWhileByCharacter} from '../util'
 import {findWhileIsDigit, isDigit} from './digit'
 import {findWhileNegativeSign} from './negative-sign'
 import {findWhileIsNonZeroDigit, findWhileIsNonZeroDigitOne} from './non-zero-digit'
@@ -67,3 +67,7 @@ export const getIntegerPart: GetToken = (input) => {
   }
   return result
 }
+
+// TODO: implement
+const isIntegerPart = () => true
+export const findWhileIsIntegerPart = findWhile(isIntegerPart)

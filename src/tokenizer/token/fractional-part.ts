@@ -1,5 +1,5 @@
 import {GetToken} from '../types'
-import {getWhile} from '../util'
+import {findWhile, getWhile} from '../util'
 import {findWhileIsDigit} from './digit'
 
 /*
@@ -32,3 +32,6 @@ const getToken: GetToken = function FractionalPart(input) {
 
 export default getToken
 
+// TODO: implement
+const isFractionalPart = () => true
+export const findWhileIsFractionalPart = findWhile(isFractionalPart)
