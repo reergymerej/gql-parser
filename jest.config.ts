@@ -8,9 +8,8 @@ const config: Config.InitialOptions = {
     'out/'
   ],
   collectCoverageFrom: [
-    'src/**/*.ts',
-    // '!src/**/*.test.ts',
-    //'src/tokenizer/util/*.ts',
+    // 'src/**/*.ts',
+    'src/tokenizer/util/finder.ts',
   ],
 }
 export default config
