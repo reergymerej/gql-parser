@@ -22,6 +22,51 @@ describe('findWhileByCharacter', () => {
       expect(actual).toEqual(expected)
     })
   })
+
+  describe('when the predicate finds something', () => {
+    it('should return a result', () => {
+      const predicate: Predicate = () => true
+      const input = 'xxx'
+      const actual = findWhileByCharacter(predicate)(input)
+      const expected: FindWhileResult = {
+        index: 3,
+        instanceCount: 3,
+        result: 'xxx',
+      }
+      expect(actual).toEqual(expected)
+    })
+
+    describe('when max is included', () => {
+      describe('ONE', () => {
+        it('should return a result', () => {
+          const predicate: Predicate = () => true
+          const max: Count = Count.ONE
+          const input = 'xxx'
+          const actual = findWhileByCharacter(predicate, max)(input)
+          const expected: FindWhileResult = {
+            index: 1,
+            instanceCount: 1,
+            result: 'x',
+          }
+          expect(actual).toEqual(expected)
+        })
+      })
+      describe('ONE_OR_MORE', () => {
+        it('should return a result', () => {
+          const predicate: Predicate = () => true
+          const max: Count = Count.ONE_OR_MORE
+          const input = 'xxx'
+          const actual = findWhileByCharacter(predicate, max)(input)
+          const expected: FindWhileResult = {
+            index: 3,
+            instanceCount: 3,
+            result: 'xxx',
+          }
+          expect(actual).toEqual(expected)
+        })
+      })
+    })
+  })
 })
 
 describe('getWhile', () => {

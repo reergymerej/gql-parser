@@ -9,7 +9,8 @@ export type Predicate = (input: string, max?: Count) => boolean
 export type FindWhileInput = (input: string) => FindWhileResult
 
 type FindWhile = (predicate: Predicate, max?: Count) => FindWhileInput
-export type GetWhilePredicate = (input: string, max?: Count) => FindWhileResult
+export type GetWhilePicker = (input: string, max?: Count) => FindWhileResult
+export type GetWhilePredicate = GetWhilePicker
 export type GetWhileResult = {
   instanceCount: number,
   remainingInput: string,
@@ -62,14 +63,14 @@ export const findWhileByCharacter: FindWhile = (predicate, max) => input => {
 export const findWhile = findWhileByCharacter
 
 // TODO: getWhile vs findWhile - Make clear the distinction.
-export const getWhile = (input: string, getWhilePredicate: GetWhilePredicate, max?: Count): GetWhileResult => {
-  const result = getWhilePredicate(input, max)
-  if (result.result.length) {
-    const remainingInput = input.substring(result.index)
+export const getWhile = (input: string, getWhilePicker: GetWhilePicker, max?: Count): GetWhileResult => {
+  const findWhileResult = getWhilePicker(input, max)
+  if (findWhileResult.result.length) {
+    const remainingInput = input.substring(findWhileResult.index)
     return {
-      instanceCount: result.instanceCount,
+      instanceCount: findWhileResult.instanceCount,
       remainingInput,
-      value: result.result,
+      value: findWhileResult.result,
     }
   }
   return {
