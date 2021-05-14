@@ -27,9 +27,9 @@ describe('crawler', () => {
     }
 
     it('should something and the remaining input', () => {
-      const input = 'foobar'
+      const input = 'foobarbazquux'
       const actual = crawler(input, evaluate)
-      const remaining = 'bar'
+      const remaining = 'barbazquux'
       const expected: CrawlerResult = [A_FOO_IDENTIFIER, remaining]
       expect(actual).toEqual(expected)
     })
