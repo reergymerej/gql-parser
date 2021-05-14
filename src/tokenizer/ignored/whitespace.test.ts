@@ -1,12 +1,12 @@
 import {crawler, CrawlerResult} from '../crawler'
 import {GetTokenResult} from '../types'
-import unicodeBOM, {evaluate, UnicodeBOM} from './unicode-BOM'
+import getToken, {evaluate, WhiteSpace} from './whitespace'
 
-describe('UnicodeBOM', () => {
-  it('should NOT return the UnicodeBOM', () => {
+describe('WhiteSpace', () => {
+  it('should NOT return the WhiteSpace', () => {
     const remainingInput = '#and the rest'
     const input = `${remainingInput}`
-    const actual = unicodeBOM(input)
+    const actual = getToken(input)
     const expected: GetTokenResult = {
       token: null,
       remainingInput: input,
@@ -14,15 +14,30 @@ describe('UnicodeBOM', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('should return the UnicodeBOM', () => {
+  it('should return the WhiteSpace', () => {
     const remainingInput = '#and the rest'
-    const input = `\uFEFF${remainingInput}`
-    const actual = unicodeBOM(input)
+    const input = `\u0009${remainingInput}`
+    const actual = getToken(input)
     const expected: GetTokenResult = {
       token: {
         ignored: true,
-        type: 'UnicodeBOM',
-        value: '\uFEFF',
+        type: 'WhiteSpace',
+        value: '\u0009',
+      },
+      remainingInput,
+    }
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return the WhiteSpace #2', () => {
+    const remainingInput = '#and the rest'
+    const input = `\u0020${remainingInput}`
+    const actual = getToken(input)
+    const expected: GetTokenResult = {
+      token: {
+        ignored: true,
+        type: 'WhiteSpace',
+        value: '\u0020',
       },
       remainingInput,
     }
@@ -32,7 +47,8 @@ describe('UnicodeBOM', () => {
   describe('Evaluator', () => {
     it.each([
       null,
-      '\uFEFF',
+      '\u0020',
+      '\u0009',
     ])('should find %s', (prefix) => {
       const remainingInput = '#and the rest'
       const input = `${prefix === null ? '' : prefix}${remainingInput}`
@@ -40,10 +56,10 @@ describe('UnicodeBOM', () => {
       const expectedValue = (prefix === null)
         ? null
         : {
-          type: 'UnicodeBOM',
-          value: prefix as UnicodeBOM['value'],
-        } as UnicodeBOM
-        const expected: CrawlerResult<UnicodeBOM> = [
+          type: 'WhiteSpace',
+          value: prefix as WhiteSpace['value'],
+        } as WhiteSpace
+        const expected: CrawlerResult<WhiteSpace> = [
           expectedValue,
           remainingInput,
         ]

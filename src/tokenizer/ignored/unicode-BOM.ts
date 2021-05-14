@@ -1,10 +1,10 @@
+import {crawler, Evaluator} from '../crawler'
+import {GetToken} from '../types'
+
 /*
 UnicodeBOM ::
   Byte Order Mark (U+FEFF)
 */
-
-import {crawler, Evaluator} from '../crawler'
-import {GetToken} from '../types'
 
 export type UnicodeBOM = {
   type: 'UnicodeBOM',

@@ -29,40 +29,6 @@ describe('terminals', () => {
   })
 })
 
-describe('ignored', () => {
-  describe('WhiteSpace', () => {
-    it('should return the WhiteSpace', () => {
-      const remainingInput = 'This stuff is not whiteSpace!'
-      const input = `\u0009${remainingInput}`
-      const actual = ignored.getToken(input)
-      const expected: GetTokenResult = {
-        token: {
-          ignored: true,
-          type: 'WhiteSpace',
-          value: '\u0009',
-        },
-        remainingInput,
-      }
-      expect(actual).toEqual(expected)
-    })
-
-    it('should return the WhiteSpace', () => {
-      const remainingInput = 'This stuff is not whiteSpace!'
-      const input = `\u0020${remainingInput}`
-      const actual = ignored.getToken(input)
-      const expected: GetTokenResult = {
-        token: {
-          ignored: true,
-          type: 'WhiteSpace',
-          value: '\u0020',
-        },
-        remainingInput,
-      }
-      expect(actual).toEqual(expected)
-    })
-  })
-})
-
 xdescribe('integration', () => {
   it('should return a bunch of tokens', () => {
     let input = `,
