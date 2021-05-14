@@ -1,5 +1,6 @@
+import {crawler, CrawlerResult} from '../crawler'
 import {GetTokenResult} from '../types'
-import comma from './comma'
+import comma, {evaluate, Comma} from './comma'
 
 describe('Comma', () => {
   it('should NOT return the Comma', () => {
@@ -25,4 +26,18 @@ describe('Comma', () => {
     }
     expect(actual).toEqual(expected)
   })
+})
+
+describe('Comma Evaluator', () => {
+  const input = ',This is not a comma.'
+  const actual = crawler(input, evaluate)
+  const remaining = 'This is not a comma.'
+  const expected: CrawlerResult<Comma> = [
+    {
+      type: 'Comma',
+      value: ',',
+    },
+    remaining,
+  ]
+  expect(actual).toEqual(expected)
 })

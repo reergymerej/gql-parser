@@ -9,8 +9,7 @@ const config: Config.InitialOptions = {
   ],
   collectCoverageFrom: [
     // 'src/**/*.ts',
-    // 'src/tokenizer/util/finder.ts',
-    'src/tokenizer/crawler*',
+    'src/tokenizer/ignored/comma*',
   ],
 }
 export default config

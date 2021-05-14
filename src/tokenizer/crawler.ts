@@ -4,18 +4,14 @@ interface Reader {
   read: (count: number) => string
 }
 
-export type FoundType = {
-  type: string
-  value: string
-}
-export type EvaluationResult = FoundType | null
+export type EvaluationResult<T> = T | null
 
-export type Evaluator = (
+export type Evaluator<T> = (
   reader: Reader,
-) => EvaluationResult
+) => EvaluationResult<T>
 
-export type CrawlerResult = [
-  FoundType | null,
+export type CrawlerResult<T> = [
+  T | null,
   string,
 ]
 
@@ -28,10 +24,12 @@ const getReader = (input: string): Reader => {
   }
 }
 
-export const crawler = (
+type Crawler = <T>(
   input: string,
-  evaluate: Evaluator,
-): CrawlerResult => {
+  evaluate: Evaluator<T>
+) => CrawlerResult<T>
+
+export const crawler: Crawler = (input, evaluate) => {
   const reader = getReader(input)
   return [
     evaluate(reader),
