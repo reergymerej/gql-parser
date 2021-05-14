@@ -10,7 +10,7 @@ const config: Config.InitialOptions = {
   collectCoverageFrom: [
     // 'src/**/*.ts',
     // 'src/tokenizer/ignored/comma*',
-    'src/tokenizer/ignored/whitespace.ts',
+    'src/tokenizer/ignored/*',
   ],
 }
 export default config

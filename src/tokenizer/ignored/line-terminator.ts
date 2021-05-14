@@ -1,3 +1,4 @@
+import {Evaluator} from '../crawler'
 import {GetToken, GetTokenResult} from '../types'
 import {getFirstTokenMatch} from '../util'
 
@@ -7,6 +8,27 @@ LineTerminator ::
   Carriage Return (U+000D) [lookahead != New Line (U+000A)]
   Carriage Return (U+000D) New Line (U+000A)
 */
+
+export type LineTerminator = {
+  type: 'LineTerminator',
+  value: string
+}
+
+export const evaluate: Evaluator<LineTerminator> = (reader) => {
+  const read = reader.read(1)
+  const isFound = read === '\u0009'
+     || read === '\u0020'
+  if (isFound) {
+    reader.consume(1)
+  }
+  const found: LineTerminator = {
+    type: 'LineTerminator',
+    value: read as LineTerminator['value'],
+  }
+  return isFound
+    ? found
+    : null
+}
 
 const one: GetToken = (input) => {
   const char = input[0]
