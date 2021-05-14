@@ -1,5 +1,5 @@
 import {GetToken} from '../types'
-import {crawler, Evaluator} from '../crawler'
+import {crawler, EvaluationResult, Evaluator} from '../crawler'
 
 /*
 LineTerminator ::
@@ -13,36 +13,66 @@ export type LineTerminator = {
   value: string
 }
 
-export const evaluate: Evaluator<LineTerminator> = (reader) => {
-  let read = reader.read(1)
-  if (read === '\u000A') {
-    reader.consume(1)
+export const one: Evaluator<LineTerminator> = (reader) => {
+  const read = reader.read(1)
+  const isFound = read === '\u000A'
+  if (isFound) {
+    const value = read as LineTerminator['value']
+    reader.consume(value.length)
     const found: LineTerminator = {
       type: 'LineTerminator',
-      value: read as LineTerminator['value'],
+      value,
     }
     return found
-  } else if (read === '\u000D') {
-    read = reader.read(2)
-    if (read === '\u000D\u000A') {
-      reader.consume(2)
-      const found: LineTerminator = {
-        type: 'LineTerminator',
-        value: read as LineTerminator['value'],
-      }
-      return found
-    } else {
-      read = reader.read(1)
-      reader.consume(1)
-      const found: LineTerminator = {
-        type: 'LineTerminator',
-        value: read as LineTerminator['value'],
-      }
-      return found
+  }
+  return null
+}
+
+export const two: Evaluator<LineTerminator> = (reader) => {
+  const read = reader.read(2)
+  const isFound = read[0] === '\u000D'
+    && read[1] !== '\u000A'
+  if (isFound) {
+    const value = read[0] as LineTerminator['value']
+    reader.consume(value.length)
+    const found: LineTerminator = {
+      type: 'LineTerminator',
+      value,
+    }
+    return found
+  }
+  return null
+}
+
+export const three: Evaluator<LineTerminator> = (reader) => {
+  const read = reader.read(2)
+  const isFound = read === '\u000D\u000A'
+  if (isFound) {
+    const value = read as LineTerminator['value']
+    reader.consume(value.length)
+    const found: LineTerminator = {
+      type: 'LineTerminator',
+      value,
+    }
+    return found
+  }
+  return null
+}
+
+export const evaluate: Evaluator<LineTerminator> = (reader) => {
+  const checks: Evaluator<LineTerminator>[] = [
+    three,
+    two,
+    one,
+  ]
+  let found: EvaluationResult<LineTerminator> = null
+  for (const check of checks) {
+    found = check(reader)
+    if (found) {
+      break
     }
   }
-
-  return null
+  return found
 }
 
 export const getToken: GetToken = function GetLineTerminator(input) {
