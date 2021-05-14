@@ -1,43 +1,52 @@
-export type EvaluationResult = true | false | 'not sure'
-
-// Make sure you consider the input length before making a determination!
-// Maybe rework later to allow the evaluator to ask for more input and only let
-// them return true/false.
-export type Evaluator = (input: string) => EvaluationResult
-
 export type FoundType = {
   type: string
   value: string
 }
+export type EvaluationResult = FoundType | null
+
+interface Reader {
+  all: () => string
+  consume: (count: number) => void
+  read: (count: number) => string
+}
+
+// Make sure you consider the input length before making a determination!
+// Maybe rework later to allow the evaluator to ask for more input and only let
+// them return true/false.
+export type Evaluator = (
+  reader: Reader,
+) => EvaluationResult
+
 export type CrawlerResult = [
   FoundType | null,
   string
 ]
 
-export const crawler = (input: string, evaluate: Evaluator): CrawlerResult => {
-  let stringToEvaluate = ''
-  let evaluationResult: EvaluationResult = 'not sure'
-
-  for (let i = 0; i < input.length && evaluationResult === 'not sure'; i++) {
-    stringToEvaluate += input[i]
-    evaluationResult = evaluate(stringToEvaluate)
+const getReader = (input: string): Reader => {
+  let remaining = input
+  return {
+    all: () => remaining,
+    consume: (count) => remaining = remaining.substring(count),
+    read: (count) => remaining.substring(0, count),
   }
+}
 
-  if (evaluationResult === 'not sure'
-      || evaluationResult === false
-     ) {
+export const crawler = (
+  input: string,
+  evaluate: Evaluator,
+): CrawlerResult => {
+  const reader = getReader(input)
+  const evaluationResult: EvaluationResult = evaluate(reader)
+
+  if (evaluationResult === null) {
     return [
       null,
-      input,
+      reader.all(),
     ]
   }
 
-  const remaining = 'bar'
   return [
-    {
-      type: 'A_FOO',
-      value: stringToEvaluate
-    },
-    remaining,
+    evaluationResult,
+    reader.all(),
   ]
 }
