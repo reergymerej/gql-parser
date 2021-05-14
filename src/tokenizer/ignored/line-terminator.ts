@@ -1,6 +1,5 @@
-import {Evaluator} from '../crawler'
-import {GetToken, GetTokenResult} from '../types'
-import {getFirstTokenMatch} from '../util'
+import {GetToken} from '../types'
+import {crawler, Evaluator} from '../crawler'
 
 /*
 LineTerminator ::
@@ -15,90 +14,56 @@ export type LineTerminator = {
 }
 
 export const evaluate: Evaluator<LineTerminator> = (reader) => {
-  const read = reader.read(1)
-  const isFound = read === '\u0009'
-     || read === '\u0020'
-  if (isFound) {
+  let read = reader.read(1)
+  if (read === '\u000A') {
     reader.consume(1)
-  }
-  const found: LineTerminator = {
-    type: 'LineTerminator',
-    value: read as LineTerminator['value'],
-  }
-  return isFound
-    ? found
-    : null
-}
-
-const one: GetToken = (input) => {
-  const char = input[0]
-  if (char === '\u000A') {
-    const remainingInput = input.substring(1)
-    return {
-      token: {
-        ignored: true,
+    const found: LineTerminator = {
+      type: 'LineTerminator',
+      value: read as LineTerminator['value'],
+    }
+    return found
+  } else if (read === '\u000D') {
+    read = reader.read(2)
+    if (read === '\u000D\u000A') {
+      reader.consume(2)
+      const found: LineTerminator = {
         type: 'LineTerminator',
-        value: char,
-      },
-      remainingInput,
+        value: read as LineTerminator['value'],
+      }
+      return found
+    } else {
+      read = reader.read(1)
+      reader.consume(1)
+      const found: LineTerminator = {
+        type: 'LineTerminator',
+        value: read as LineTerminator['value'],
+      }
+      return found
     }
   }
-  return {
-    token: null,
-    remainingInput: input,
-  }
-}
 
-const two: GetToken = (input) => {
-  const char = input[0]
-  if (char === '\u000D' && input[1] !== '\u000A') {
-    const remainingInput = input.substring(1)
-    return {
-      token: {
-        ignored: true,
-        type: 'LineTerminator',
-        value: char,
-      },
-      remainingInput,
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
-}
-
-const three: GetToken = (input) => {
-  const head = input.substring(0, 2)
-  if (head === '\u000D\u000A') {
-    const remainingInput = input.substring(2)
-    return {
-      token: {
-        ignored: true,
-        type: 'LineTerminator',
-        value: head,
-      },
-      remainingInput,
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+  return null
 }
 
 export const getToken: GetToken = function GetLineTerminator(input) {
-  const getTokenResult: GetTokenResult | null = getFirstTokenMatch([
-    one,
-    two,
-    three,
-  ])(input)
-  if (getTokenResult) {
-    return getTokenResult
+  const [
+    found,
+    remainingInput,
+  ] = crawler(input, evaluate)
+
+  if (found) {
+    return {
+      token: {
+        ignored: true,
+        type: found.type,
+        value: found?.value,
+      },
+      remainingInput,
+    }
   }
   return {
-    token: null,
-    remainingInput: input
+    token: found,
+    remainingInput,
   }
 }
 
