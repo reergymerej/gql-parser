@@ -35,7 +35,7 @@ const getToken: GetToken = (input) => {
     return {
       token: {
         ignored: true,
-        type: 'Comma',
+        type: found.type,
         value: found?.value,
       },
       remainingInput,

@@ -26,18 +26,18 @@ describe('Comma', () => {
     }
     expect(actual).toEqual(expected)
   })
-})
 
-describe('Comma Evaluator', () => {
-  const input = ',This is not a comma.'
-  const actual = crawler(input, evaluate)
-  const remaining = 'This is not a comma.'
-  const expected: CrawlerResult<Comma> = [
-    {
-      type: 'Comma',
-      value: ',',
-    },
-    remaining,
-  ]
-  expect(actual).toEqual(expected)
+  describe('Evaluator', () => {
+    const input = ',This is not a comma.'
+    const actual = crawler(input, evaluate)
+    const remaining = 'This is not a comma.'
+    const expected: CrawlerResult<Comma> = [
+      {
+        type: 'Comma',
+        value: ',',
+      },
+      remaining,
+    ]
+    expect(actual).toEqual(expected)
+  })
 })

@@ -30,21 +30,6 @@ describe('terminals', () => {
 })
 
 describe('ignored', () => {
-  it('should return the UnicodeBOM', () => {
-    const remainingInput = 'This stuff is not whiteSpace!'
-    const input = `\uFEFF${remainingInput}`
-    const actual = ignored.getToken(input)
-    const expected: GetTokenResult = {
-      token: {
-        ignored: true,
-        type: 'UnicodeBOM',
-        value: '\uFEFF',
-      },
-      remainingInput,
-    }
-    expect(actual).toEqual(expected)
-  })
-
   describe('WhiteSpace', () => {
     it('should return the WhiteSpace', () => {
       const remainingInput = 'This stuff is not whiteSpace!'
