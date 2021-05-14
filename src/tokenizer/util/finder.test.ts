@@ -1,4 +1,4 @@
-import {Count} from '../../types'
+import { Count } from '../../types'
 import {
   FindWhileResult,
   GetWhilePredicate,
@@ -6,6 +6,7 @@ import {
   Predicate,
   findWhileByCharacter,
   getWhile,
+  isUnderLimit,
 } from './finder'
 
 describe('findWhileByCharacter', () => {
@@ -107,4 +108,23 @@ describe('getWhile', () => {
       expect(actual).toEqual(expected)
     })
   })
+})
+
+describe('isUnderLimit', () => {
+  it.each([
+    [true, Count.ONE, 1],
+    [true, Count.ONE_OR_FEWER, 1],
+    [false, Count.ONE, 2],
+    [false, Count.ONE_OR_FEWER, 2],
+    [true, Count.ONE_OR_MORE, 1],
+    [true, Count.ONE_OR_MORE, 2],
+    [false, Count.ONE_OR_MORE, 0],
+    [true, Count.ANY, -9999],
+  ])(
+    'should return %s for limit %s (enum) and count %d',
+    (expected, limit, count) => {
+      const actual = isUnderLimit(limit, count)
+      expect(actual).toEqual(expected)
+    }
+  )
 })

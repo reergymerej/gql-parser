@@ -50,13 +50,13 @@ describe('IntegerPart', () => {
   })
 
   describe('NegativeSign (opt) NonZeroDigit Digit (list, opt)', () => {
-    it.each([
-      [false, ''],
-      [false, '-'],
-      [true, '3'],
-      [true, '-3'],
+    fit.each([
+      // [false, ''],
+      // [false, '-'],
+      // [true, '3'],
+      // [true, '-3'],
       [true, '34'],
-      [true, '-34'],
+      // [true, '-34'],
     ])('should return %s for %s', (isToken, head) => {
       const remainingInput = '#and then other stuff'
       const input = `${head}${remainingInput}`

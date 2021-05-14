@@ -17,11 +17,29 @@ export type GetWhileResult = {
   value: string,
 }
 
+export const isUnderLimit = (limit: Count, count: number): boolean => {
+  switch (limit) {
+    case Count.ONE:
+    case Count.ONE_OR_FEWER:
+      return count <= 1
+    case Count.ONE_OR_MORE:
+      return count >= 1
+    case Count.ANY:
+      return true
+  }
+}
+
 export const findWhileByCharacter: FindWhile = (predicate, max) => input => {
   let i = 0
   let instanceCount = 0
-  let hitCap = false
-  for (; i < input.length && !hitCap;) {
+  const limitReached = () => {
+    if (max !== undefined) {
+      return !isUnderLimit(max, instanceCount)
+    }
+    return false
+  }
+  let result = ''
+  for (; i < input.length && !limitReached();) {
     // This is only looking one character at a time.
     // There is no reason the predicate can't handle more than one char.
     const char = input[i]
@@ -35,23 +53,8 @@ export const findWhileByCharacter: FindWhile = (predicate, max) => input => {
     const instanceLength = instance.length
     i += instanceLength
     instanceCount++
-    if (max !== undefined) {
-      switch (max) {
-        case Count.ONE:
-        case Count.ONE_OR_FEWER:
-          hitCap = true
-          break
-        case Count.ONE_OR_MORE:
-        case Count.ANY:
-          hitCap = false
-          break
-        default:
-          throw new Error(`unhandled case "${Count[max]}"`)
-      }
-    }
-
+    result += char
   }
-  const result = input.substring(0, i)
   return {
     index: i,
     instanceCount,
