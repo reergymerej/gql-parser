@@ -1,6 +1,6 @@
-import {isSourceChar} from '../source-character'
 import {GetToken} from '../types'
 import {crawler, Evaluator} from '../crawler'
+import * as commentChar from './comment-char'
 
 /*
 Comment ::
@@ -18,7 +18,7 @@ export const evaluate: Evaluator<Comment> = (reader) => {
   if (isFound) {
     let value = head as Comment['value']
     reader.consume(head.length)
-    const tail = commentChar(reader)
+    const tail = commentChar.evaluate(reader)
     const tailValue = tail === null ? '' : tail.value
     value = `${head}${tailValue}` as Comment['value']
     const found: Comment = {

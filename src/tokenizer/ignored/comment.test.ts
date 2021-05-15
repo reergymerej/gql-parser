@@ -47,27 +47,29 @@ describe('Comment', () => {
     })
   })
 
-  fdescribe('Evaluator', () => {
-    it.each<[string, null | string]>([
-      // [
-      //   '',
-      //   null,
-      // ],
-      // [
-      //   '#',
-      //   '#',
-      // ],
-      // [
-      //   '# Look at this!',
-      //   '# Look at this!',
-      // ],
+  describe('Evaluator', () => {
+    it.each<[string, null | string, string]>([
       [
-        '# Look at this!\nnotthis',
-        '# Look at this!',
+        '',
+        null,
+        '',
       ],
-    ])('should find %s', (prefix, expectedValue) => {
-      const remainingInput = '\u0019<- That is NOT a source char!'
-      const input = `${prefix === null ? '' : prefix}${remainingInput}`
+      [
+        '#',
+        '#',
+        '',
+      ],
+      [
+        '# Look at this!',
+        '# Look at this!',
+        '',
+      ],
+      [
+        '# Look at this!\n\u0019not this',
+        '# Look at this!',
+        '\n\u0019not this',
+      ],
+    ])('should find %s', (input, expectedValue, remainingInput) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
