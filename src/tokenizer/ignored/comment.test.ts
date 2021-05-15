@@ -49,16 +49,20 @@ describe('Comment', () => {
 
   fdescribe('Evaluator', () => {
     it.each<[string, null | string]>([
+      // [
+      //   '',
+      //   null,
+      // ],
+      // [
+      //   '#',
+      //   '#',
+      // ],
+      // [
+      //   '# Look at this!',
+      //   '# Look at this!',
+      // ],
       [
-        '',
-        null,
-      ],
-      [
-        '#',
-        '#',
-      ],
-      [
-        '# Look at this!',
+        '# Look at this!\nnotthis',
         '# Look at this!',
       ],
     ])('should find %s', (prefix, expectedValue) => {

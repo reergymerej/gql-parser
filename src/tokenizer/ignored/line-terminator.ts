@@ -13,12 +13,15 @@ export type LineTerminator = {
   value: string
 }
 
+const isOne = (input: string): boolean => {
+  return input === '\u000A'
+}
+
 export const one: Evaluator<LineTerminator> = (reader) => {
   const read = reader.read(1)
-  const isFound = read === '\u000A'
+  const isFound = isOne(read)
   if (isFound) {
     const value = read as LineTerminator['value']
-    reader.consume(value.length)
     const found: LineTerminator = {
       type: 'LineTerminator',
       value,
@@ -26,15 +29,18 @@ export const one: Evaluator<LineTerminator> = (reader) => {
     return found
   }
   return null
+}
+
+const isTwo = (input: string): boolean => {
+  return input[0] === '\u000D'
+    && input[1] !== '\u000A'
 }
 
 export const two: Evaluator<LineTerminator> = (reader) => {
   const read = reader.read(2)
-  const isFound = read[0] === '\u000D'
-    && read[1] !== '\u000A'
+  const isFound = isTwo(read)
   if (isFound) {
     const value = read[0] as LineTerminator['value']
-    reader.consume(value.length)
     const found: LineTerminator = {
       type: 'LineTerminator',
       value,
@@ -44,12 +50,15 @@ export const two: Evaluator<LineTerminator> = (reader) => {
   return null
 }
 
+const isThree = (input: string): boolean => {
+  return input === '\u000D\u000A'
+}
+
 export const three: Evaluator<LineTerminator> = (reader) => {
   const read = reader.read(2)
-  const isFound = read === '\u000D\u000A'
+  const isFound = isThree(read)
   if (isFound) {
     const value = read as LineTerminator['value']
-    reader.consume(value.length)
     const found: LineTerminator = {
       type: 'LineTerminator',
       value,
@@ -69,10 +78,17 @@ export const evaluate: Evaluator<LineTerminator> = (reader) => {
   for (const check of checks) {
     found = check(reader)
     if (found) {
+      reader.consume(found.value.length)
       break
     }
   }
   return found
+}
+
+export const isLineTerminator = (input: string): boolean => {
+  return isThree(input.substring(0, 2))
+    || isTwo(input.substring(0, 2))
+    || isOne(input.substring(0, 1))
 }
 
 export const getToken: GetToken = function GetLineTerminator(input) {
