@@ -1,9 +1,16 @@
 import {GetToken} from '../types'
+import {crawler, Evaluator} from '../crawler'
 
 /*
 Punctuator :: one of
   ! $ ( ) ... : = @ [ ] { | }
 */
+
+export type Punctuator = {
+  type: 'Punctuator',
+  value: string
+}
+
 const punctuators = [
   '!',
   '$',
@@ -20,37 +27,54 @@ const punctuators = [
   '}',
 ]
 
-const isPunctuator = (char: string): boolean => {
-  return punctuators.includes(char)
+const isPunctuator = (value: string): boolean => {
+  return punctuators.includes(value)
+}
+
+export const evaluate: Evaluator<Punctuator> = (reader) => {
+  let value = ''
+  const short = reader.read(1)
+  let isFound = isPunctuator(short)
+  if (isFound) {
+    value = short as Punctuator['value']
+  } else {
+    const long = reader.read(3)
+    isFound = isPunctuator(long)
+    if (isFound) {
+      value = long as Punctuator['value']
+    }
+  }
+
+  if (isFound) {
+    reader.consume(value.length)
+    const found: Punctuator = {
+      type: 'Punctuator',
+      value,
+    }
+    return found
+  }
+  return null
 }
 
 const getToken: GetToken = function Punctuator(input) {
-  if (input.indexOf('...') === 0) {
-    const tail = input.slice(3)
+  const [
+    found,
+    remainingInput,
+  ] = crawler(input, evaluate)
+
+  if (found) {
     return {
       token: {
-          type: 'Punctuator',
-          value: '...',
+        type: found.type,
+        value: found?.value,
       },
-      remainingInput: tail,
-    }
-  }
-  const head = input[0]
-  const tail = input.slice(1)
-  if (isPunctuator(head)) {
-    return {
-      token: {
-          type: 'Punctuator',
-          value: head,
-      },
-      remainingInput: tail,
+      remainingInput,
     }
   }
   return {
-    token: null,
-    remainingInput: input,
+    token: found,
+    remainingInput,
   }
 }
 
 export default getToken
-

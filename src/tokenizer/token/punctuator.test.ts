@@ -1,5 +1,6 @@
+import {crawler, CrawlerResult} from '../crawler'
 import {GetTokenResult} from '../types'
-import punctuator from './punctuator'
+import punctuator, { evaluate, Punctuator } from './punctuator'
 
 describe('Punctuator', () => {
   describe('negative test', () => {
@@ -40,6 +41,39 @@ describe('Punctuator', () => {
         },
         remainingInput: remainingInput,
       }
+      expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('Evaluator', () => {
+    it.each<[string, null | string, string]>([
+      [
+        '',
+        null,
+        '',
+      ],
+      [
+        '!beep',
+        '!',
+        'beep',
+      ],
+      [
+        '...!',
+        '...',
+        '!',
+      ],
+    ])('should find %s', (input, expectedValue, remainingInput) => {
+      const actual = crawler(input, evaluate)
+      const expectedResultValue = (expectedValue === null)
+        ? null
+        : {
+          type: 'Punctuator',
+          value: expectedValue as Punctuator['value'],
+        } as Punctuator
+      const expected: CrawlerResult<Punctuator> = [
+        expectedResultValue,
+        remainingInput,
+      ]
       expect(actual).toEqual(expected)
     })
   })
