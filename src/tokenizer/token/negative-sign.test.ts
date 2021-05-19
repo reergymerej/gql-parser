@@ -3,23 +3,20 @@ import {evaluate, NegativeSign} from './negative-sign'
 
 describe('NegativeSign', () => {
   describe('Evaluator', () => {
-    it.each<[string, null | string, string]>([
+    it.each<[string, null | string]>([
       [
         '',
         null,
-        '',
       ],
       [
         '-beep',
         '-',
-        'beep',
       ],
       [
         '--',
         '-',
-        '-',
       ],
-    ])('should find %s', (input, expectedValue, remainingInput) => {
+    ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
@@ -29,7 +26,7 @@ describe('NegativeSign', () => {
         } as NegativeSign
       const expected: CrawlerResult<NegativeSign> = [
         expectedResultValue,
-        remainingInput,
+        expect.any(String),
       ]
       expect(actual).toEqual(expected)
     })

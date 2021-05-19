@@ -3,7 +3,7 @@ import type {Config} from '@jest/types'
 const config: Config.InitialOptions = {
   verbose: false,
   bail: !true,
-  collectCoverage: true,
+  collectCoverage: !true,
   coveragePathIgnorePatterns: [
     'out/'
   ],

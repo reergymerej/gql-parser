@@ -1,5 +1,7 @@
-import {findWhileByCharacter} from '../util'
-import { Evaluator} from '../crawler'
+import * as nonZeroDigit from './non-zero-digit'
+import { Evaluator, getReader} from '../crawler'
+import {StringPredicate} from '../types'
+import {findIndex, findWhileByCharacter} from '../util'
 
 /*
 Digit :: one of
@@ -24,6 +26,12 @@ export const isDigit = (char: string): boolean => {
     '8' ,
     '9',
   ].includes(char)
+}
+
+export const startsWithDigits: StringPredicate = (value) => {
+  const reader = getReader(value)
+  const firstNonZeroDigit = findIndex(reader, nonZeroDigit.isNonZeroDigit)
+  return firstNonZeroDigit > -1
 }
 
 export const findWhileIsDigit = findWhileByCharacter(isDigit)

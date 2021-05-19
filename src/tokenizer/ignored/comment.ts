@@ -1,5 +1,5 @@
-import {GetToken} from '../types'
-import {crawler, Evaluator} from '../crawler'
+import {Evaluator, getReader} from '../crawler'
+import {findIndex} from '../util'
 import * as commentChar from './comment-char'
 
 /*
@@ -12,43 +12,24 @@ export type Comment = {
   value: string
 }
 
+export const isComment = (value: string): boolean => {
+  return value[0] === '#'
+}
+
 export const evaluate: Evaluator<Comment> = (reader) => {
-  const head = reader.read(1)
-  const isFound = head === '#'
-  if (isFound) {
-    let value = head as Comment['value']
-    reader.consume(head.length)
-    const tail = commentChar.evaluate(reader)
-    const tailValue = tail === null ? '' : tail.value
-    value = `${head}${tailValue}` as Comment['value']
+  const value = reader.read(1)
+  if (isComment(value)) {
+    const endOffset = value.length
+    const endReader = getReader(reader.from(endOffset))
+    const endIndex = findIndex(endReader, commentChar.isCommentChar)
+    const full = (endIndex > -1)
+      ? reader.read(endIndex + endOffset)
+      : reader.read(endOffset)
     const found: Comment = {
       type: 'Comment',
-      value,
+      value: full as Comment['value'],
     }
     return found
   }
   return null
 }
-
-export const getToken: GetToken = function GetLineTerminator(input) {
-  const [
-    found,
-    remainingInput,
-  ] = crawler(input, evaluate)
-  if (found) {
-    return {
-      token: {
-        ignored: true,
-        type: found.type,
-        value: found?.value,
-      },
-      remainingInput,
-    }
-  }
-  return {
-    token: found,
-    remainingInput,
-  }
-}
-
-export default getToken

@@ -1,5 +1,4 @@
-import {crawler, Evaluator} from '../crawler'
-import {GetToken} from '../types'
+import {Evaluator} from '../crawler'
 
 /*
 WhiteSpace ::
@@ -12,42 +11,21 @@ export type WhiteSpace = {
   value: '\u0009' | '\u0020',
 }
 
+export const isWhiteSpace = (char: string): boolean => {
+  return [
+  '\u0009',
+  '\u0020',
+  ].includes(char)
+}
+
 export const evaluate: Evaluator<WhiteSpace> = (reader) => {
-  const read = reader.read(1)
-  const isFound = read === '\u0009'
-     || read === '\u0020'
-  if (isFound) {
-    reader.consume(1)
-  }
-  const found: WhiteSpace = {
-    type: 'WhiteSpace',
-    value: read as WhiteSpace['value'],
-  }
-  return isFound
-    ? found
-    : null
-}
-
-const getToken: GetToken = function GetWhiteSpace(input) {
-  const [
-    found,
-    remainingInput,
-  ] = crawler(input, evaluate)
-
-  if (found) {
-    return {
-      token: {
-        ignored: true,
-        type: found.type,
-        value: found?.value,
-      },
-      remainingInput,
+  const value = reader.read(1)
+  if (isWhiteSpace(value)) {
+    const found: WhiteSpace = {
+      type: 'WhiteSpace',
+      value: value as WhiteSpace['value'],
     }
+    return found
   }
-  return {
-    token: found,
-    remainingInput,
-  }
+  return null
 }
-
-export default getToken

@@ -1,7 +1,7 @@
-import {crawler, CrawlerResult} from '../crawler'
-import {evaluate, WhiteSpace} from './whitespace'
+import {crawler, CrawlerResult} from './crawler'
+import {evaluate, SourceCharacter} from './source-character'
 
-describe('WhiteSpace', () => {
+describe('SourceCharacter', () => {
   describe('Evaluator', () => {
     it.each<[string, null | string]>([
       [
@@ -9,30 +9,30 @@ describe('WhiteSpace', () => {
         null,
       ],
       [
-        '\u0009beep',
+        '\u0008',
+        null,
+      ],
+      [
+        '\u0009',
         '\u0009',
       ],
       [
-        '\u0020beep',
-        '\u0020',
+        '!beep',
+        '!',
       ],
       [
-        ' \u0020beep',
-        ' ',
-      ],
-      [
-        '\u0009\u0009',
-        '\u0009',
+        'D',
+        'D',
       ],
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
         : {
-          type: 'WhiteSpace',
-          value: expectedValue as WhiteSpace['value'],
-        } as WhiteSpace
-      const expected: CrawlerResult<WhiteSpace> = [
+          type: 'SourceCharacter',
+          value: expectedValue as SourceCharacter['value'],
+        } as SourceCharacter
+      const expected: CrawlerResult<SourceCharacter> = [
         expectedResultValue,
         expect.any(String),
       ]

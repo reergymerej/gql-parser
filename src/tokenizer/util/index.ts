@@ -1,5 +1,6 @@
 import {Count} from '../../types'
-import {GetToken, GetTokenResult, Token} from '../types'
+import {Reader} from '../crawler'
+import {GetToken, GetTokenResult, StringPredicate, Token} from '../types'
 import {FindWhileInput, getWhile} from './finder'
 
 export const getFirstTokenMatch = (getTokenTests: GetToken[]) => (input: string): GetTokenResult | null => {
@@ -103,3 +104,18 @@ export {
   findWhileByCharacter,
   getWhile,
 } from './finder'
+
+export const findIndex = (reader: Reader, test: StringPredicate): number => {
+  const all = reader.all()
+  const maxIndex = all.length
+  let i = -1
+  for (; i < maxIndex; i++) {
+    const value = reader.from(i)
+    const passesTest = test(value)
+    if (!passesTest) {
+      break
+    }
+  }
+  return i
+}
+

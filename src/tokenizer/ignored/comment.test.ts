@@ -1,75 +1,34 @@
 import {crawler, CrawlerResult} from '../crawler'
-import {GetTokenResult} from '../types'
-import comment, { evaluate, Comment } from './comment'
+import { evaluate, Comment } from './comment'
 
 describe('Comment', () => {
-  describe('negative test', () => {
-    it('should NOT return the Comment', () => {
-      const input = 'This is not a comment.'
-      const actual = comment(input)
-      const expected: GetTokenResult = {
-        token: null,
-        remainingInput: input,
-      }
-      expect(actual).toEqual(expected)
-    })
-  })
-
-  describe('with empty CommentChar', () => {
-    it('should return the Comment', () => {
-      const input = '#'
-      const actual = comment(input)
-      const expected: GetTokenResult = {
-        token: {
-          type: 'Comment',
-          ignored: true,
-          value: '#',
-        },
-        remainingInput: '',
-      }
-      expect(actual).toEqual(expected)
-    })
-  })
-
-  describe('with CommentChar', () => {
-    it('should return the Comment', () => {
-      const input = '#I\'m a little teapot.\u000AHere\'s my spout.'
-      const actual = comment(input)
-      const expected: GetTokenResult = {
-        token: {
-          type: 'Comment',
-          ignored: true,
-          value: '#I\'m a little teapot.',
-        },
-        remainingInput: '\u000AHere\'s my spout.',
-      }
-      expect(actual).toEqual(expected)
-    })
-  })
-
   describe('Evaluator', () => {
-    it.each<[string, null | string, string]>([
+    it.each<[string, null | string]>([
       [
         '',
         null,
-        '',
+      ],
+      [
+        '# ',
+        '# ',
       ],
       [
         '#',
         '#',
-        '',
+      ],
+      [
+        '# Look at this!\nnot this',
+        '# Look at this!',
       ],
       [
         '# Look at this!',
         '# Look at this!',
-        '',
       ],
       [
-        '# Look at this!\n\u0019not this',
+        '# Look at this!\u000Anot this',
         '# Look at this!',
-        '\n\u0019not this',
       ],
-    ])('should find %s', (input, expectedValue, remainingInput) => {
+    ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
@@ -79,7 +38,7 @@ describe('Comment', () => {
         } as Comment
       const expected: CrawlerResult<Comment> = [
         expectedResultValue,
-        remainingInput,
+        expect.any(String),
       ]
       expect(actual).toEqual(expected)
     })

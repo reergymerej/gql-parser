@@ -1,5 +1,4 @@
-import {GetToken} from '../types'
-import {crawler, Evaluator} from '../crawler'
+import {Evaluator} from '../crawler'
 
 /*
 Punctuator :: one of
@@ -8,7 +7,20 @@ Punctuator :: one of
 
 export type Punctuator = {
   type: 'Punctuator',
-  value: string
+  value:
+    | '!'
+    | '$'
+    | '('
+    | ')'
+    | '...'
+    | ':'
+    | '='
+    | '@'
+    | '['
+    | ']'
+    | '{'
+    | '|'
+    | '}'
 }
 
 const punctuators = [
@@ -32,49 +44,21 @@ const isPunctuator = (value: string): boolean => {
 }
 
 export const evaluate: Evaluator<Punctuator> = (reader) => {
-  let value = ''
-  const short = reader.read(1)
-  let isFound = isPunctuator(short)
-  if (isFound) {
-    value = short as Punctuator['value']
-  } else {
-    const long = reader.read(3)
-    isFound = isPunctuator(long)
-    if (isFound) {
-      value = long as Punctuator['value']
-    }
-  }
-
-  if (isFound) {
-    reader.consume(value.length)
+  let value = reader.read(3)
+  if (isPunctuator(value)) {
     const found: Punctuator = {
       type: 'Punctuator',
-      value,
+      value: value as Punctuator['value'],
+    }
+    return found
+  }
+  value = reader.read(1)
+  if (isPunctuator(value)) {
+    const found: Punctuator = {
+      type: 'Punctuator',
+      value: value as Punctuator['value'],
     }
     return found
   }
   return null
 }
-
-const getToken: GetToken = function Punctuator(input) {
-  const [
-    found,
-    remainingInput,
-  ] = crawler(input, evaluate)
-
-  if (found) {
-    return {
-      token: {
-        type: found.type,
-        value: found?.value,
-      },
-      remainingInput,
-    }
-  }
-  return {
-    token: found,
-    remainingInput,
-  }
-}
-
-export default getToken

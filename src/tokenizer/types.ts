@@ -26,3 +26,4 @@ export type GetTokenResult = {
   remainingInput: string,
 }
 export type GetToken = (input: string) => GetTokenResult
+export type StringPredicate = (value: string) => boolean

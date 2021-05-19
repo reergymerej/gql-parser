@@ -24,7 +24,6 @@ export const evaluate: Evaluator<NegativeSign> = (reader) => {
       type: 'NegativeSign',
       value: value as NegativeSign['value'],
     }
-    reader.consume(value.length)
     return found
   }
   return null

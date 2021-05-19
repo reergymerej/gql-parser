@@ -1,5 +1,4 @@
-import {GetToken} from '../types'
-import {crawler, EvaluationResult, Evaluator} from '../crawler'
+import {EvaluationResult, Evaluator} from '../crawler'
 
 /*
 LineTerminator ::
@@ -78,7 +77,6 @@ export const evaluate: Evaluator<LineTerminator> = (reader) => {
   for (const check of checks) {
     found = check(reader)
     if (found) {
-      reader.consume(found.value.length)
       break
     }
   }
@@ -90,27 +88,3 @@ export const isLineTerminator = (input: string): boolean => {
     || isTwo(input.substring(0, 2))
     || isOne(input.substring(0, 1))
 }
-
-export const getToken: GetToken = function GetLineTerminator(input) {
-  const [
-    found,
-    remainingInput,
-  ] = crawler(input, evaluate)
-
-  if (found) {
-    return {
-      token: {
-        ignored: true,
-        type: found.type,
-        value: found?.value,
-      },
-      remainingInput,
-    }
-  }
-  return {
-    token: found,
-    remainingInput,
-  }
-}
-
-export default getToken

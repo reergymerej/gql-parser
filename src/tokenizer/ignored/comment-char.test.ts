@@ -3,23 +3,20 @@ import {evaluate, CommentChar} from './comment-char'
 
 describe('CommentChar', () => {
   describe('Evaluator', () => {
-    it.each<[string, null | string, string]>([
+    it.each<[string, null | string]>([
       [
         '',
         null,
-        '',
       ],
       [
-        'weasel\nboop',
-        'weasel',
-        '\nboop',
-      ],
-      [
-        'weasel\u0019\nboop',
-        'weasel',
         '\u0019\nboop',
+        null,
       ],
-    ])('should find %s', (input, expectedValue, remainingInput) => {
+      [
+        'w\nboop',
+        'w',
+      ],
+    ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
@@ -29,10 +26,9 @@ describe('CommentChar', () => {
         } as CommentChar
       const expected: CrawlerResult<CommentChar> = [
         expectedResultValue,
-        remainingInput,
+        expect.any(String),
       ]
       expect(actual).toEqual(expected)
     })
   })
 })
-

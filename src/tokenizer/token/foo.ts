@@ -9,8 +9,8 @@ export type Foo = {
   value: string,
 }
 
-export const isFoo = (char: string): boolean => {
-  return char === '?'
+export const isFoo = (value: string): boolean => {
+  throw new Error('not implemented')
 }
 
 export const evaluate: Evaluator<Foo> = (reader) => {

@@ -1,6 +1,7 @@
-interface Reader {
+export interface Reader {
   all: () => string
   consume: (count: number) => void
+  from: (index: number) => string
   read: (count: number) => string
 }
 
@@ -15,11 +16,12 @@ export type CrawlerResult<T> = [
   string,
 ]
 
-const getReader = (input: string): Reader => {
+export const getReader = (input: string): Reader => {
   let remaining = input
   return {
     all: () => remaining,
     consume: (count) => remaining = remaining.substring(count),
+    from: (index) => remaining.substring(index),
     read: (count) => remaining.substring(0, count),
   }
 }
