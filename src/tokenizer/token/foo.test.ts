@@ -1,26 +1,30 @@
 import {crawler, CrawlerResult} from '../crawler'
-import {evaluate, UnicodeBOM} from './unicode-BOM'
+import {evaluate, Foo} from './foo'
 
-describe('UnicodeBOM', () => {
+describe('Foo', () => {
   describe('Evaluator', () => {
     it.each<[string, null | string]>([
       [
         '',
         null,
       ],
-      [
-        '\uFEFF123',
-        '\uFEFF',
-      ],
+      // [
+      //   '!beep',
+      //   '!',
+      // ],
+      // [
+      //   '...!',
+      //   '...',
+      // ],
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
         : {
-          type: 'UnicodeBOM',
-          value: expectedValue as UnicodeBOM['value'],
-        } as UnicodeBOM
-      const expected: CrawlerResult<UnicodeBOM> = [
+          type: 'Foo',
+          value: expectedValue as Foo['value'],
+        } as Foo
+      const expected: CrawlerResult<Foo> = [
         expectedResultValue,
         expect.any(String),
       ]

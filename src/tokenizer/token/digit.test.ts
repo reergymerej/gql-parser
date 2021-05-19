@@ -3,18 +3,16 @@ import {evaluate, Digit} from './digit'
 
 describe('Digit', () => {
   describe('Evaluator', () => {
-    it.each<[string, null | string, string]>([
+    it.each<[string, null | string]>([
       [
         '',
         null,
-        '',
       ],
       [
         '0123',
         '0',
-        '123',
       ],
-    ])('should find %s', (input, expectedValue, remainingInput) => {
+    ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
@@ -24,7 +22,7 @@ describe('Digit', () => {
         } as Digit
       const expected: CrawlerResult<Digit> = [
         expectedResultValue,
-        remainingInput,
+        expect.any(String),
       ]
       expect(actual).toEqual(expected)
     })

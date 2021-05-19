@@ -1,7 +1,7 @@
 import {crawler, CrawlerResult} from '../crawler'
-import {evaluate, UnicodeBOM} from './unicode-BOM'
+import {evaluate, NonZeroDigit} from './non-zero-digit'
 
-describe('UnicodeBOM', () => {
+describe('NonZeroDigit', () => {
   describe('Evaluator', () => {
     it.each<[string, null | string]>([
       [
@@ -9,18 +9,22 @@ describe('UnicodeBOM', () => {
         null,
       ],
       [
-        '\uFEFF123',
-        '\uFEFF',
+        '0123',
+        null,
+      ],
+      [
+        '123',
+        '1',
       ],
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
         ? null
         : {
-          type: 'UnicodeBOM',
-          value: expectedValue as UnicodeBOM['value'],
-        } as UnicodeBOM
-      const expected: CrawlerResult<UnicodeBOM> = [
+          type: 'NonZeroDigit',
+          value: expectedValue as NonZeroDigit['value'],
+        } as NonZeroDigit
+      const expected: CrawlerResult<NonZeroDigit> = [
         expectedResultValue,
         expect.any(String),
       ]

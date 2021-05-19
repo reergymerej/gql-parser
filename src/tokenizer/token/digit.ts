@@ -35,7 +35,6 @@ export const evaluate: Evaluator<Digit> = (reader) => {
       type: 'Digit',
       value: value as Digit['value'],
     }
-    reader.consume(value.length)
     return found
   }
   return null
