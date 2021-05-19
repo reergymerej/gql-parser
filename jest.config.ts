@@ -8,9 +8,7 @@ const config: Config.InitialOptions = {
     'out/'
   ],
   collectCoverageFrom: [
-    // 'src/**/*.ts',
-    // 'src/tokenizer/ignored/comma*',
-    'src/tokenizer/ignored/line-terminator.ts',
+    'src/**/*.ts',
   ],
 }
 export default config

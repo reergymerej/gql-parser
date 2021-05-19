@@ -1,4 +1,6 @@
 import {GetTokenResult} from '../types'
+import {crawler, CrawlerResult} from '../crawler'
+import {evaluate, IntegerPart} from './integer-part'
 import {getIntegerPart} from './integer-part'
 
 describe('IntegerPart', () => {
@@ -50,7 +52,7 @@ describe('IntegerPart', () => {
   })
 
   describe('NegativeSign (opt) NonZeroDigit Digit (list, opt)', () => {
-    fit.each([
+    it.each([
       // [false, ''],
       // [false, '-'],
       // [true, '3'],
@@ -76,6 +78,39 @@ describe('IntegerPart', () => {
           remainingInput: remainingInput,
         }
       }
+      expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('Evaluator', () => {
+    it.each<[string, null | string, string]>([
+      [
+        '',
+        null,
+        '',
+      ],
+      // [
+      //   '!beep',
+      //   '!',
+      //   'beep',
+      // ],
+      // [
+      //   '...!',
+      //   '...',
+      //   '!',
+      // ],
+    ])('should find %s', (input, expectedValue, remainingInput) => {
+      const actual = crawler(input, evaluate)
+      const expectedResultValue = (expectedValue === null)
+        ? null
+        : {
+          type: 'IntegerPart',
+          value: expectedValue as IntegerPart['value'],
+        } as IntegerPart
+      const expected: CrawlerResult<IntegerPart> = [
+        expectedResultValue,
+        remainingInput,
+      ]
       expect(actual).toEqual(expected)
     })
   })
