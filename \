@@ -1,0 +1,28 @@
+import { Evaluator} from './crawler'
+
+/*
+IntValue ::
+  IntegerPart
+*/
+
+export type IntValue = {
+  type: 'IntValue',
+  value: string,
+}
+
+export const isIntValue = (value: string): boolean => {
+  throw new Error('not implemented')
+}
+
+export const evaluate: Evaluator<IntValue> = (reader) => {
+  const value = reader.read(1)
+  if (isIntValue(value)) {
+    const found: IntValue = {
+      type: 'IntValue',
+      value: value as IntValue['value'],
+    }
+    // DO NOT CONSUME HERE!  That is up to the caller.
+    return found
+  }
+  return null
+}

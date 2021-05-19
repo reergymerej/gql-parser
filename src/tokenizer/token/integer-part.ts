@@ -3,6 +3,7 @@ import * as negativeSign from './negative-sign'
 import * as nonZeroDigit from './non-zero-digit'
 import {Evaluator, getReader, Reader} from '../crawler'
 import {findIndex} from '../util'
+import {StringPredicate} from '../types'
 
 /*
 IntegerPart ::
@@ -15,8 +16,9 @@ export type IntegerPart = {
   value: string
 }
 
-export const isIntegerPart = (value: string): boolean => {
-  throw new Error('not implemented')
+export const isIntegerPart: StringPredicate = value => {
+  const reader = getReader(value)
+  return evaluate(reader) !== null
 }
 
 const getIntegerPartWithPrefix = (head: string) => (tail: string) => {

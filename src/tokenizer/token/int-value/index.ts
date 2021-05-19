@@ -1,23 +1,30 @@
-import {GetToken} from '../../types'
-import {getIntegerPart} from '../integer-part'
+import {Evaluator} from '../../crawler'
+import {findIndex} from '../../util'
+import * as integerPart from '../integer-part'
 
 /*
 IntValue ::
   IntegerPart
 */
 
-const getToken: GetToken = function IntValue(input) {
-  const integerPart = getIntegerPart(input)
-  if (integerPart.token) {
-    return {
-      ...integerPart,
-      token: {
-        ...integerPart.token,
-        type: 'IntValue',
-      },
-    }
-  }
-  return integerPart
+export type IntValue = {
+  type: 'IntValue',
+  value: string,
 }
 
-export default getToken
+export const isIntValue = (value: string): boolean => {
+  throw new Error('not implemented')
+}
+
+export const evaluate: Evaluator<IntValue> = (reader) => {
+  const nonIntegerPartIndex = findIndex(reader, integerPart.isIntegerPart)
+  if (nonIntegerPartIndex === -1) {
+    return null
+  }
+  const full = reader.read(nonIntegerPartIndex)
+  const found: IntValue = {
+    type: 'IntValue',
+    value: full as IntValue['value'],
+  }
+  return found
+}
