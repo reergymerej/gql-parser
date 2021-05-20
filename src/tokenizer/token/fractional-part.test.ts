@@ -1,41 +1,38 @@
-import {GetTokenResult} from '../types'
-import fractionalPart from './fractional-part'
+import {crawler, CrawlerResult} from '../crawler'
+import {evaluate, FractionalPart} from './fractional-part'
 
 describe('FractionalPart', () => {
-  describe('negative tests', () => {
-    it.each([
-      '',
-      'dddddddddddd',
-      '.',
-    ])('should not find a FractionalPart for %s', (head) => {
-      const remainingInput = '#and then other stuff'
-      const input = `${head}${remainingInput}`
-      const actual = fractionalPart(input)
-      const expected: GetTokenResult = {
-        token: null,
-        remainingInput: input,
-      }
-      expect(actual).toEqual(expected)
-    })
-  })
-
-  describe('positive tests', () => {
-    it.each([
-      '.12340',
-      '.000001',
-    ])('should return the FractionalPart for %s', (head) => {
-      const remainingInput = '#and then other stuff'
-      const input = `${head}${remainingInput}`
-      const actual = fractionalPart(input)
-      const expected: GetTokenResult = {
-        token: {
+  describe('Evaluator', () => {
+    it.each<[string, null | string]>([
+      [
+        '',
+        null,
+      ],
+      [
+        '.',
+        null,
+      ],
+      [
+        '.x',
+        null,
+      ],
+      [
+        '.1',
+        '.1',
+      ],
+    ])('should find %s', (input, expectedValue) => {
+      const actual = crawler(input, evaluate)
+      const expectedResultValue = (expectedValue === null)
+        ? null
+        : {
           type: 'FractionalPart',
-          value: head,
-        },
-        remainingInput: remainingInput,
-      }
+          value: expectedValue as FractionalPart['value'],
+        } as FractionalPart
+      const expected: CrawlerResult<FractionalPart> = [
+        expectedResultValue,
+        expect.any(String),
+      ]
       expect(actual).toEqual(expected)
     })
   })
 })
-

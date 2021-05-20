@@ -1,37 +1,35 @@
-import {GetToken} from '../types'
-import {findWhile, getWhile} from '../util'
-import {findWhileIsDigit} from './digit'
+import { Evaluator} from '../crawler'
+import * as digit from './digit'
 
 /*
 FractionalPart ::
   . Digit (list)
 */
 
-const getToken: GetToken = function FractionalPart(input) {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (head === '.') {
-    const digits = getWhile(tail, findWhileIsDigit)
-    if (digits.value.length) {
-      const value = `${head}${digits.value}`
-      const remainingInput = digits.remainingInput
-      return {
-        token: {
-            type: 'FractionalPart',
-            value,
-        },
-        remainingInput,
-      }
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
+export type FractionalPart = {
+  type: 'FractionalPart',
+  value: string,
 }
 
-export default getToken
+export const isFractionalPart = (value: string): boolean => {
+  throw new Error('not implemented')
+}
 
-// TODO: implement
-const isFractionalPart = () => true
-export const findWhileIsFractionalPart = findWhile(isFractionalPart)
+export const evaluate: Evaluator<FractionalPart> = (reader) => {
+  const head = reader.read(1)
+  if (head === '.') {
+    const tail = digit.getWhileIsDigit(reader.from(1))
+    if (tail.length === 0) {
+      return null
+    }
+    console.log({tail})
+  }
+  return null
+  // if (isFractionalPart(value)) {
+  //   const found: FractionalPart = {
+  //     type: 'FractionalPart',
+  //     value: value as FractionalPart['value'],
+  //   }
+  //   return found
+  // }
+}

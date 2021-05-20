@@ -17,14 +17,13 @@ export const isIntValue = (value: string): boolean => {
 }
 
 export const evaluate: Evaluator<IntValue> = (reader) => {
-  const nonIntegerPartIndex = findIndex(reader, integerPart.isIntegerPart)
-  if (nonIntegerPartIndex === -1) {
-    return null
+  const value = integerPart.evaluate(reader)
+  if (value) {
+    const found: IntValue = {
+      type: 'IntValue',
+      value: value.value as IntValue['value'],
+    }
+    return found
   }
-  const full = reader.read(nonIntegerPartIndex)
-  const found: IntValue = {
-    type: 'IntValue',
-    value: full as IntValue['value'],
-  }
-  return found
+  return null
 }

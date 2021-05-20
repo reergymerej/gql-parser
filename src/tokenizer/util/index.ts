@@ -1,5 +1,5 @@
 import {Count} from '../../types'
-import {Reader} from '../crawler'
+import {getReader, Reader} from '../crawler'
 import {GetToken, GetTokenResult, StringPredicate, Token} from '../types'
 import {FindWhileInput, getWhile} from './finder'
 
@@ -105,17 +105,25 @@ export {
   getWhile,
 } from './finder'
 
-export const findIndex = (reader: Reader, test: StringPredicate): number => {
+export type ReaderOrString = Reader | string
+export const findIndex = (input: ReaderOrString, test: StringPredicate): number => {
+  const reader = typeof input === 'string'
+    ? getReader(input)
+    : input
   const all = reader.all()
   const maxIndex = all.length
-  let i = -1
+  let foundOne = false
+  let i = 0
   for (; i < maxIndex; i++) {
     const value = reader.from(i)
     const passesTest = test(value)
     if (!passesTest) {
       break
     }
+    foundOne = true
+  }
+  if (!foundOne) {
+    return -1
   }
   return i
 }
-

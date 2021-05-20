@@ -22,5 +22,10 @@ module.exports = {
         'allowEmptyCatch': true,
       }
     ],
+    'complexity': [
+      'warn', {
+        max: 4,
+      },
+    ],
   },
 }

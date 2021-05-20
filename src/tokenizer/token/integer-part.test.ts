@@ -13,6 +13,10 @@ describe('IntegerPart', () => {
         '-0',
       ],
       [
+        '00',
+        '0',
+      ],
+      [
         '-0L',
         '-0',
       ],
@@ -55,6 +59,14 @@ describe('IntegerPart', () => {
       [
         '19L',
         '19',
+      ],
+      [
+        '-00',
+        '-0',
+      ],
+      [
+        '-400120L',
+        '-400120',
       ],
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)

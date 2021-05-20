@@ -1,36 +1,31 @@
-import {GetTokenResult} from '../../types'
-import floatValue from '../float-value'
+import {crawler, CrawlerResult} from '../../crawler'
+import {evaluate, FloatValue} from '.'
 
 xdescribe('FloatValue', () => {
-  describe('negative test', () => {
-    it('should NOT return the FloatValue', () => {
-      const input = '#This is not a FloatValue.'
-      const actual = floatValue(input)
-      const expected: GetTokenResult = {
-        token: null,
-        remainingInput: input,
-      }
-      expect(actual).toEqual(expected)
-    })
-  })
-
-  xdescribe('positive tests', () => {
-    it.each([
-      // '-0.1230', // one
+  describe('Evaluator', () => {
+    it.each<[string, null | string]>([
+      // [
+      //   '',
+      //   null,
+      // ],
+      [
+        '-3360029.1230#blah', // one
+        '-0.1230',
+      ],
       // '2e+10', // two
-      '6.0221413e23', // IntegerPart FractionalPart ExponentPart
-      // '-',
-    ])('should return the FloatValue for %s', (head) => {
-      const remainingInput = '#and then other stuff'
-      const input = `${head}${remainingInput}`
-      const actual = floatValue(input)
-      const expected: GetTokenResult = {
-        token: {
+      // '6.0221413e23', // IntegerPart FractionalPart ExponentPart
+    ])('should find %s', (input, expectedValue) => {
+      const actual = crawler(input, evaluate)
+      const expectedResultValue = (expectedValue === null)
+        ? null
+        : {
           type: 'FloatValue',
-          value: head,
-        },
-        remainingInput: remainingInput,
-      }
+          value: expectedValue as FloatValue['value'],
+        } as FloatValue
+      const expected: CrawlerResult<FloatValue> = [
+        expectedResultValue,
+        expect.any(String),
+      ]
       expect(actual).toEqual(expected)
     })
   })

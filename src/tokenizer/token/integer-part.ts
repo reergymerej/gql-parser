@@ -1,6 +1,6 @@
 import * as digit from './digit'
-import * as negativeSign from './negative-sign'
 import * as nonZeroDigit from './non-zero-digit'
+import * as negativeSign from './negative-sign'
 import {Evaluator, getReader, Reader} from '../crawler'
 import {findIndex} from '../util'
 import {StringPredicate} from '../types'
@@ -30,26 +30,13 @@ const getIntegerPartWithPrefix = (head: string) => (tail: string) => {
   return found
 }
 
-const getWithNonZero = (reader: Reader, head: string) => {
-  const tail = ''
-  const digitsEndIndex = findIndex(reader, digit.startsWithDigits)
-  const hasEndDigits = digitsEndIndex > -1
-  if (hasEndDigits) {
-    const endDigits = reader.read(digitsEndIndex)
-    return getIntegerPartWithPrefix(head)(endDigits)
+const startsWithNonZero = (reader: Reader, head: string) => {
+  const requiredNonZero = nonZeroDigit.evaluate(reader)
+  if (requiredNonZero === null) {
+    return null
   }
+  const tail = digit.getWhileIsDigit(reader)
   return getIntegerPartWithPrefix(head)(tail)
-}
-
-const nonZero = (reader: Reader, head: string) => {
-  const value = nonZeroDigit.evaluate(reader)
-  const nextIsNonZeroDigit = value !== null
-  if (nextIsNonZeroDigit) {
-    const foundValue = value && value.value || ''
-    const tailReader = getReader(reader.from(foundValue?.length))
-    return getWithNonZero(tailReader, head + foundValue)
-  }
-  return null
 }
 
 const afterNegativeSign = (reader: Reader, prefix: string) => {
@@ -58,7 +45,7 @@ const afterNegativeSign = (reader: Reader, prefix: string) => {
   if (nextIsZero) {
     return getIntegerPartWithPrefix(prefix)(nextChar)
   }
-  return nonZero(reader, prefix)
+  return startsWithNonZero(reader, prefix)
 }
 
 const startsWithNegative = (reader: Reader, head: negativeSign.NegativeSign) => {

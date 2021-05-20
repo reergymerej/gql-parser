@@ -1,5 +1,5 @@
 import {crawler, CrawlerResult} from '../crawler'
-import {evaluate, Digit} from './digit'
+import {evaluate, Digit, getWhileIsDigit} from './digit'
 
 describe('Digit', () => {
   describe('Evaluator', () => {
@@ -26,5 +26,25 @@ describe('Digit', () => {
       ]
       expect(actual).toEqual(expected)
     })
+  })
+})
+
+describe('getWhileIsDigit', () => {
+  it.each([
+    [
+      '1234',
+      '1234x',
+    ],
+    [
+      '',
+      '',
+    ],
+    [
+      '',
+      'x',
+    ],
+  ])('should return %s for %s', (expected, input) => {
+    const actual = getWhileIsDigit(input)
+    expect(actual).toEqual(expected)
   })
 })

@@ -1,7 +1,6 @@
-import * as nonZeroDigit from './non-zero-digit'
 import { Evaluator, getReader} from '../crawler'
 import {StringPredicate} from '../types'
-import {findIndex, findWhileByCharacter} from '../util'
+import {findIndex, findWhileByCharacter, ReaderOrString} from '../util'
 
 /*
 Digit :: one of
@@ -30,11 +29,26 @@ export const isDigit = (char: string): boolean => {
 
 export const startsWithDigits: StringPredicate = (value) => {
   const reader = getReader(value)
-  const firstNonZeroDigit = findIndex(reader, nonZeroDigit.isNonZeroDigit)
-  return firstNonZeroDigit > -1
+  const firstNonDigit = findIndex(reader, isDigit)
+  return firstNonDigit > -1
 }
 
+// TODO: Is this used?
 export const findWhileIsDigit = findWhileByCharacter(isDigit)
+
+export const getWhileIsDigit = (input: ReaderOrString): string => {
+  const reader = typeof input === 'string'
+    ? getReader(input)
+    : input
+  const lastDigitIndex = findIndex(
+    reader,
+    (value: string) => isDigit(value[0])
+  )
+  if (lastDigitIndex === -1) {
+    return ''
+  }
+  return reader.read(lastDigitIndex)
+}
 
 export const evaluate: Evaluator<Digit> = (reader) => {
   const value = reader.read(1)

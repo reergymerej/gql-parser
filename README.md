@@ -84,3 +84,12 @@ What are the atomic elements (tokens) in GQL?
 https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Lexical-Tokens
 
 
+--------------------------------------------------------------------------------
+
+The spec is goofy.  Leading zeros in IntegerPart are kinda silly.
+https://github.com/graphql/graphql-spec/issues/572
+0 is OK
+00 is read as two IntegerPart, 0 0
+100 is 100
+003 is read as 0 0 3
+
