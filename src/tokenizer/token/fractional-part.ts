@@ -15,6 +15,14 @@ export const isFractionalPart = (value: string): boolean => {
   throw new Error('not implemented')
 }
 
+const getType = (head: string, tail: string): FractionalPart  => {
+  const combined = `${head}${tail}`
+  return {
+    type: 'FractionalPart',
+    value: combined as FractionalPart['value'],
+  }
+}
+
 export const evaluate: Evaluator<FractionalPart> = (reader) => {
   const head = reader.read(1)
   if (head === '.') {
@@ -22,14 +30,7 @@ export const evaluate: Evaluator<FractionalPart> = (reader) => {
     if (tail.length === 0) {
       return null
     }
-    console.log({tail})
+    return getType(head, tail)
   }
   return null
-  // if (isFractionalPart(value)) {
-  //   const found: FractionalPart = {
-  //     type: 'FractionalPart',
-  //     value: value as FractionalPart['value'],
-  //   }
-  //   return found
-  // }
 }
