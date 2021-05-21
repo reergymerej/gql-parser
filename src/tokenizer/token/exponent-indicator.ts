@@ -1,5 +1,4 @@
-import { Evaluator} from '../crawler'
-
+import {isInValues, getEvaluator} from '../util/factory'
 /*
 ExponentIndicator ::
   e E
@@ -10,25 +9,9 @@ export type ExponentIndicator = {
   value: string,
 }
 
-export const isExponentIndicator = (value: string): boolean => {
-  return [
-    'e',
-    'E',
-  ].includes(value[0])
-}
+export const checkSingleChar = isInValues([
+  'e',
+  'E',
+])
 
-const getType = (head: string, tail: string): ExponentIndicator  => {
-  const combined = `${head}${tail}`
-  return {
-    type: 'ExponentIndicator',
-    value: combined as ExponentIndicator['value'],
-  }
-}
-
-export const evaluate: Evaluator<ExponentIndicator> = (reader) => {
-  const value = reader.read(1)
-  if (isExponentIndicator(value)) {
-    return getType(value, '')
-  }
-  return null
-}
+export const evaluate = getEvaluator<ExponentIndicator>(checkSingleChar, 'ExponentIndicator')
