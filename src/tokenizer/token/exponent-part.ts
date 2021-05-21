@@ -1,4 +1,7 @@
-import { Evaluator} from '../crawler'
+import { Evaluator, getReader} from '../crawler'
+import * as exponentIndicator from './exponent-indicator'
+import * as sign from './sign'
+import * as digit from './digit'
 
 /*
 ExponentPart ::
@@ -10,10 +13,6 @@ export type ExponentPart = {
   value: string,
 }
 
-export const isExponentPart = (value: string): boolean => {
-  throw new Error('not implemented')
-}
-
 const getType = (head: string, tail: string): ExponentPart  => {
   const combined = `${head}${tail}`
   return {
@@ -23,9 +22,22 @@ const getType = (head: string, tail: string): ExponentPart  => {
 }
 
 export const evaluate: Evaluator<ExponentPart> = (reader) => {
-  const value = reader.read(1)
-  if (isExponentPart(value)) {
-    return getType(value, '')
+  const a = exponentIndicator.evaluate(reader)
+  if (a) {
+    const parts: string[] = []
+    parts.push(a.value)
+    let tailReader = getReader(reader.from(a.value.length))
+    const b = sign.evaluate(tailReader)
+    if (b) {
+      parts.push(b.value)
+      tailReader = getReader(tailReader.from(b.value.length))
+    }
+    const c = digit.getWhileIsDigit(tailReader)
+    if (!c) {
+      return null
+    }
+    parts.push(c)
+    return getType(parts.join(''), '')
   }
   return null
 }

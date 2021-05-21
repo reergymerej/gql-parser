@@ -8,20 +8,50 @@ describe('ExponentPart', () => {
         '',
         null,
       ],
-      // 'e123',
-      // 'E123',
-      // 'e-123',
-      // 'E-123',
-      // 'e+123',
-      // 'E+123',
-      // [
-      //   '!beep',
-      //   '!',
-      // ],
-      // [
-      //   '...!',
-      //   '...',
-      // ],
+      [
+        'e',
+        null
+      ],
+      [
+        'e0',
+        'e0',
+      ],
+      [
+        'ex',
+        null,
+      ],
+      [
+        'e01',
+        'e01',
+      ],
+      [
+        'e12 ',
+        'e12',
+      ],
+      [
+        'E123',
+        'E123',
+      ],
+      [
+        'e-123',
+        'e-123',
+      ],
+      [
+        'E-123',
+        'E-123',
+      ],
+      [
+        'e+123',
+        'e+123',
+      ],
+      [
+        'E+123',
+        'E+123',
+      ],
+      [
+        'E+123 ',
+        'E+123',
+      ],
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
