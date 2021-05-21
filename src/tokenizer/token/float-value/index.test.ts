@@ -1,7 +1,7 @@
 import {crawler, CrawlerResult} from '../../crawler'
 import {evaluate, FloatValue} from '.'
 
-xdescribe('FloatValue', () => {
+describe('FloatValue', () => {
   describe('Evaluator', () => {
     it.each<[string, null | string]>([
       // [

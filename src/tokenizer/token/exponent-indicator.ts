@@ -1,29 +1,34 @@
-import {Count} from '../../types'
-import {GetToken} from '../types'
-import {assembler, findWhileByCharacter, Requirement} from '../util'
+import { Evaluator} from '../crawler'
 
 /*
 ExponentIndicator ::
   e E
 */
 
-const isExponentIndicator = (char: string): boolean => {
+export type ExponentIndicator = {
+  type: 'ExponentIndicator',
+  value: string,
+}
+
+export const isExponentIndicator = (value: string): boolean => {
   return [
     'e',
     'E',
-  ].includes(char)
+  ].includes(value[0])
 }
 
-export const findWhileIsExponentIndicator = findWhileByCharacter(isExponentIndicator)
-
-const getToken: GetToken = function ExponentIndicator(input) {
-  const requirements: Requirement[] = [
-    {
-      count: Count.ONE,
-      finder: findWhileIsExponentIndicator,
-    },
-  ]
-  return assembler(requirements, input, 'ExponentIndicator')
+const getType = (head: string, tail: string): ExponentIndicator  => {
+  const combined = `${head}${tail}`
+  return {
+    type: 'ExponentIndicator',
+    value: combined as ExponentIndicator['value'],
+  }
 }
 
-export default getToken
+export const evaluate: Evaluator<ExponentIndicator> = (reader) => {
+  const value = reader.read(1)
+  if (isExponentIndicator(value)) {
+    return getType(value, '')
+  }
+  return null
+}

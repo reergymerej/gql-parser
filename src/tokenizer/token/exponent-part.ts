@@ -1,39 +1,31 @@
-import {Count} from '../../types'
-import {GetToken} from '../types'
-import {assembler, findWhile, Requirement} from '../util'
-import {findWhileIsDigit} from './digit'
-import {findWhileIsExponentIndicator} from './exponent-indicator'
-import {findWhileIsSign} from './sign'
+import { Evaluator} from '../crawler'
 
 /*
 ExponentPart ::
   ExponentIndicator Sign (opt) Digit (list)
 */
 
-const getToken: GetToken = function ExponentPart(input) {
-  const requirements: Requirement[] = [
-    {
-      finder: findWhileIsExponentIndicator,
-      count: Count.ONE,
-    },
-    {
-      finder: findWhileIsSign,
-      count: Count.ONE_OR_FEWER,
-    },
-    {
-      finder: findWhileIsDigit,
-      count: Count.ONE_OR_MORE,
-    },
-  ]
-  return assembler(
-    requirements,
-    input,
-    'ExponentPart',
-  )
+export type ExponentPart = {
+  type: 'ExponentPart',
+  value: string,
 }
 
-export default getToken
+export const isExponentPart = (value: string): boolean => {
+  throw new Error('not implemented')
+}
 
-// TODO: implement
-const isExponentPart = () => true
-export const findWhileIsExponentPart = findWhile(isExponentPart)
+const getType = (head: string, tail: string): ExponentPart  => {
+  const combined = `${head}${tail}`
+  return {
+    type: 'ExponentPart',
+    value: combined as ExponentPart['value'],
+  }
+}
+
+export const evaluate: Evaluator<ExponentPart> = (reader) => {
+  const value = reader.read(1)
+  if (isExponentPart(value)) {
+    return getType(value, '')
+  }
+  return null
+}

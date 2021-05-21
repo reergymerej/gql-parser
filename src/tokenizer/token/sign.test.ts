@@ -1,33 +1,42 @@
-import {GetTokenResult} from '../types'
-import sign from './sign'
+import {crawler, CrawlerResult} from '../crawler'
+import {evaluate, Sign} from './sign'
 
 describe('Sign', () => {
-  describe('negative test', () => {
-    it('should NOT return the Sign', () => {
-      const input = '#This is not a Sign.'
-      const actual = sign(input)
-      const expected: GetTokenResult = {
-        token: null,
-        remainingInput: input,
-      }
+  describe('Evaluator', () => {
+    it.each<[string, null | string]>([
+      [
+        '',
+        null,
+      ],
+      [
+        '-',
+        '-',
+      ],
+      [
+        '+',
+        '+',
+      ],
+      [
+        '-asdf',
+        '-',
+      ],
+      [
+        '+asdf',
+        '+',
+      ],
+    ])('should find %s', (input, expectedValue) => {
+      const actual = crawler(input, evaluate)
+      const expectedResultValue = (expectedValue === null)
+        ? null
+        : {
+          type: 'Sign',
+          value: expectedValue as Sign['value'],
+        } as Sign
+      const expected: CrawlerResult<Sign> = [
+        expectedResultValue,
+        expect.any(String),
+      ]
       expect(actual).toEqual(expected)
     })
-  })
-
-  it.each([
-    '+',
-    '-',
-  ])('should return the Sign for %s', (head) => {
-    const remainingInput = '#and then other stuff'
-    const input = `${head}${remainingInput}`
-    const actual = sign(input)
-    const expected: GetTokenResult = {
-      token: {
-        type: 'Sign',
-        value: head,
-      },
-      remainingInput: remainingInput,
-    }
-    expect(actual).toEqual(expected)
   })
 })

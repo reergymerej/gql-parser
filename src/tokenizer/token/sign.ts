@@ -1,35 +1,18 @@
-import {GetToken} from '../types'
-import {findWhileByCharacter} from '../util'
+import {isInValues, getEvaluator} from '../util/factory'
 
 /*
 Sign :: one of
   + -
 */
 
-const isSign = (char: string): boolean => {
-  return char === '+'
-  || char === '-'
+export type Sign = {
+  type: 'Sign',
+  value: string,
 }
 
-const getToken: GetToken = function Sign(input) {
-  const head = input[0]
-  const tail = input.slice(1)
-  if (isSign(head)) {
-    return {
-      token: {
-          type: 'Sign',
-          value: head,
-      },
-      remainingInput: tail,
-    }
-  }
-  return {
-    token: null,
-    remainingInput: input,
-  }
-}
+export const checkSingleChar = isInValues([
+  '-',
+  '+',
+])
 
-export default getToken
-
-
-export const findWhileIsSign = findWhileByCharacter(isSign)
+export const evaluate = getEvaluator<Sign>(checkSingleChar, 'Sign')
