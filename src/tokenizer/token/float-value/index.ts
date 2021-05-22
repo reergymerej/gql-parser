@@ -1,7 +1,7 @@
 import * as exponentPart from '../exponent-part'
 import * as fractionalPart from '../fractional-part'
 import * as integerPart from '../integer-part'
-import {Evaluator, getReader} from '../../crawler'
+import {Evaluator, getReader, Reader} from '../../crawler'
 
 /*
 FloatValue ::
@@ -23,12 +23,12 @@ const getType = (parts: string[]): FloatValue  => {
 }
 
 const frac = (
-  parts,
-  theFractionalPart,
-  tailReader,
+  parts: string[],
+  theFractionalPart: fractionalPart.FractionalPart,
+  reader: Reader,
 ) => {
   parts.push(theFractionalPart.value)
-  const tailReader2 = getReader(tailReader.from(theFractionalPart.value.length))
+  const tailReader2 = getReader(reader.from(theFractionalPart.value.length))
   const theExponentPart = exponentPart.evaluate(tailReader2)
   if (theExponentPart) {
     parts.push(theExponentPart.value)
@@ -43,10 +43,9 @@ export const evaluate: Evaluator<FloatValue> = (reader) => {
     parts.push(theIntegerPart.value)
     const tailReader = getReader(reader.from(theIntegerPart.value.length))
     const theFractionalPart = fractionalPart.evaluate(tailReader)
-
     if (theFractionalPart) {
       return frac(
-        parts,
+        [...parts],
         theFractionalPart,
         tailReader,
       )
