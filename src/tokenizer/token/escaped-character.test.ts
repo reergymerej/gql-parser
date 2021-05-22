@@ -8,11 +8,9 @@ describe('EscapedCharacter', () => {
         '',
         null,
       ],
-      [
-        '"',
-        '"',
-        // \ / b f n r t
-      ],
+      ...('"\\/bfnrt'
+        .split('')
+        .map(x => [x, x] as [string, string]))
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)

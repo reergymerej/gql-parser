@@ -1,6 +1,7 @@
-import { Evaluator} from '../crawler'
+import { Evaluator, getReader} from '../crawler'
 import * as sourceCharacter from '../source-character'
 import * as lineTerminator from '../ignored/line-terminator'
+import * as escapedCharacter from './escaped-character'
 
 /*
 StringCharacter ::
@@ -42,7 +43,7 @@ export const evaluate: Evaluator<StringCharacter> = (reader) => {
       return getType([theSourceCharacter.value])
     }
   }
-  const head = reader.read(2)
+  let head = reader.read(2)
   if (head === '\\u') {
     const parts: string[] = [head]
     const escapedUnicode = getEscapedUnicode(reader.from(head.length))
@@ -50,7 +51,14 @@ export const evaluate: Evaluator<StringCharacter> = (reader) => {
       parts.push(escapedUnicode)
       return getType(parts)
     }
-    console.log(parts)
+  }
+  head = reader.read(1)
+  if (head === '\\') {
+    const tailReader = getReader(reader.from(head.length))
+    const theEscapedCharacter = escapedCharacter.evaluate(tailReader)
+    if (theEscapedCharacter) {
+      return getType([head, theEscapedCharacter.value])
+    }
   }
   return null
 }

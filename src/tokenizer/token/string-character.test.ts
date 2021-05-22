@@ -32,6 +32,10 @@ describe('StringCharacter', () => {
         '\\u19aFxxxx',
         '\\u19aF',
       ],
+      [
+        '\\bxxx',
+        '\\b',
+      ],
     ])('should find %s', (input, expectedValue) => {
       const actual = crawler(input, evaluate)
       const expectedResultValue = (expectedValue === null)
