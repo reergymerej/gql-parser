@@ -1,5 +1,7 @@
-import {Evaluator} from '../../crawler'
+import * as exponentPart from '../exponent-part'
+import * as fractionalPart from '../fractional-part'
 import * as integerPart from '../integer-part'
+import {Evaluator, getReader} from '../../crawler'
 
 /*
 FloatValue ::
@@ -13,12 +15,48 @@ export type FloatValue = {
   value: string,
 }
 
-export const isFloatValue = (value: string): boolean => {
-  throw new Error('not implemented')
+const getType = (parts: string[]): FloatValue  => {
+  return {
+    type: 'FloatValue',
+    value: parts.join('') as FloatValue['value'],
+  }
+}
+
+const frac = (
+  parts,
+  theFractionalPart,
+  tailReader,
+) => {
+  parts.push(theFractionalPart.value)
+  const tailReader2 = getReader(tailReader.from(theFractionalPart.value.length))
+  const theExponentPart = exponentPart.evaluate(tailReader2)
+  if (theExponentPart) {
+    parts.push(theExponentPart.value)
+  }
+  return getType(parts)
 }
 
 export const evaluate: Evaluator<FloatValue> = (reader) => {
-  const head = integerPart.evaluate(reader)
-  console.log(reader.all(), {head})
-  throw new Error('FractionalPart not implemented')
+  const parts: string[] = []
+  const theIntegerPart = integerPart.evaluate(reader)
+  if (theIntegerPart) {
+    parts.push(theIntegerPart.value)
+    const tailReader = getReader(reader.from(theIntegerPart.value.length))
+    const theFractionalPart = fractionalPart.evaluate(tailReader)
+
+    if (theFractionalPart) {
+      return frac(
+        parts,
+        theFractionalPart,
+        tailReader,
+      )
+    }
+
+    const theExponentPart = exponentPart.evaluate(tailReader)
+    if (theExponentPart) {
+      parts.push(theExponentPart.value)
+      return getType(parts)
+    }
+  }
+  return null
 }
